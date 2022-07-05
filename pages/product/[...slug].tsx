@@ -1,13 +1,18 @@
 import { Button, Chip, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useState } from "react";
+import ItemCounter from "../../components/ItemCounter";
 import Layout from "../../components/Layout";
+import SizeSelector from "../../components/products/SizeSelector";
 import Slideshow from "../../components/Slideshow";
 import { initialData } from "../../database/products";
+import { ISize } from "../../interfaces";
 
 const product = initialData.products[0];
 
 const Slug = () => {
+  const [currentSize, setCurrentSize] = useState<ISize>();
+
   return (
     <Layout title={product.title} description={product.description}>
       <Grid container spacing={3}>
@@ -24,9 +29,14 @@ const Slug = () => {
               {product.price}
             </Typography>
 
-            <Box my={2}>
+            <Box my={2} display="flex" alignItems="center">
               <Typography variant="subtitle2">Quantity</Typography>
-              {/* item counter */}
+              <ItemCounter maxNumber={product.inStock} />
+              <SizeSelector
+                onClick={(size) => setCurrentSize(size)}
+                selectedSize={currentSize}
+                sizes={product.sizes}
+              />
             </Box>
 
             <Button color="secondary" className="circular-btn">

@@ -10,7 +10,7 @@ type Props = {
 
 const Slideshow = ({ images }: Props) => {
   return (
-    <Slide easing="ease" duration={7000} indicators infinite={false}>
+    <Slide easing="ease" duration={7000} indicators>
       {images.map((image) => {
         const url = `/products/${image}`;
 
