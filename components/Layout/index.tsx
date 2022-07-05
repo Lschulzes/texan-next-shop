@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import Navbar from "../Navbar";
+import { SideMenu } from "../SideMenu";
 
 type Props = {
   title: string;
@@ -23,6 +24,8 @@ const Layout = ({ description, title, imageFullUrl, children }: Props) => {
       </Head>
 
       <Navbar />
+
+      <SideMenu />
 
       <main
         style={{
