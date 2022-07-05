@@ -1,10 +1,24 @@
+import { Typography } from "@mui/material";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Layout from "../components/Layout";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
-  return <h1>Hello World</h1>;
+  return (
+    <Layout
+      title="Texan-Shop - Home"
+      description="Find the best texan products here"
+    >
+      <Typography variant="h1" component="h1">
+        Shop
+      </Typography>
+      <Typography variant="h2" mb="1">
+        All Products
+      </Typography>
+    </Layout>
+  );
 };
 
 export default Home;
