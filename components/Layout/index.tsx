@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React, { ReactNode } from "react";
+import Navbar from "../Navbar";
 
 type Props = {
   title: string;
@@ -21,7 +22,7 @@ const Layout = ({ description, title, imageFullUrl, children }: Props) => {
         {imageFullUrl && <meta name="og:image" content={imageFullUrl} />}
       </Head>
 
-      <nav></nav>
+      <Navbar />
 
       <main
         style={{
