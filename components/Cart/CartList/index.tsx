@@ -28,7 +28,7 @@ const CartList = ({ editable = false }: CartListProps) => {
               <Link>
                 <CardActionArea>
                   <CardMedia
-                    image={`products/${images[0]}`}
+                    image={`/products/${images[0]}`}
                     sx={{ borderRadius: "5px" }}
                     component="img"
                   />
@@ -62,9 +62,11 @@ const CartList = ({ editable = false }: CartListProps) => {
           >
             <Typography variant="subtitle1">${price}</Typography>
 
-            <Button variant="text" color="secondary">
-              Remove
-            </Button>
+            {editable && (
+              <Button variant="text" color="secondary">
+                Remove
+              </Button>
+            )}
           </Grid>
         </Grid>
       ))}
