@@ -24,7 +24,7 @@ export default async function handler(
       return await getDB(res);
   }
 
-  res.status(404).json({ message: "route not found!" });
+  res.status(400).json({ message: "route not found!" });
 }
 
 const getDB = async (res: NextApiResponse<Data>) => {
