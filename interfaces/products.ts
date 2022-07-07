@@ -1,3 +1,5 @@
+export type ProductGender = "men" | "women" | "kid" | "unisex";
+
 export interface IProduct {
   _id: string;
   description: string;
@@ -9,7 +11,7 @@ export interface IProduct {
   tags: Array<string>;
   title: string;
   type: IType;
-  gender: "men" | "women" | "kid" | "unisex";
+  gender: ProductGender;
 }
 
 export type ISize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";

@@ -1,6 +1,7 @@
+import { FilterQuery } from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import { db, SHOP_CONSTANTS } from "../../../database";
-import { IProduct } from "../../../interfaces";
+import { IProduct, ProductGender } from "../../../interfaces";
 import { ProductModel } from "../../../models";
 
 type Data = {
@@ -23,12 +24,16 @@ export default async function handler(
 }
 
 const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  const { gender = "all" } = req.query;
+  const { gender = null, search = null } = req.query;
 
-  let condition = {};
+  let condition: FilterQuery<IProduct> = {};
 
-  if (gender !== "all" && SHOP_CONSTANTS.validGenders.includes(`${gender}`)) {
+  if (gender && isValidGender(gender)) {
     condition = { gender };
+  }
+
+  if (search) {
+    condition.$text = { $search: search.toString().toLocaleLowerCase() };
   }
 
   await db.connect();
@@ -40,4 +45,10 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   return res
     .status(200)
     .json({ status: "success", results: products.length, data: products });
+};
+
+const isValidGender = (
+  gender: ProductGender | string | Array<string>
+): gender is ProductGender => {
+  return SHOP_CONSTANTS.validGenders.includes(gender as ProductGender);
 };
