@@ -19,7 +19,7 @@ import { useProducts } from "../hooks";
 import { IProduct } from "../interfaces";
 
 const Home: NextPage = () => {
-  const { products, error, isLoading } = useProducts("/products");
+  const { data, error, isLoading } = useProducts("/products");
 
   if (error) return <div>Error</div>;
   if (isLoading) return <FullScreenLoading />;
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
         All Products
       </Typography>
 
-      <ProductList products={products.data as Array<IProduct>} />
+      <ProductList products={data.data as Array<IProduct>} />
     </Layout>
   );
 };

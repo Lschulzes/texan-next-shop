@@ -8,5 +8,5 @@ export const useProducts = (url: string, config: SWRConfiguration = {}) => {
     config
   );
 
-  return { products: data || { data: [] }, error, isLoading: !data && !error };
+  return { data: data || { data: [] }, error, isLoading: !data && !error };
 };

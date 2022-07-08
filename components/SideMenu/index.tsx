@@ -5,6 +5,7 @@ import {
   IconButton,
   Input,
   InputAdornment,
+  Link,
   List,
   ListItem,
   ListItemIcon,
@@ -23,10 +24,14 @@ import {
   SearchOutlined,
   VpnKeyOutlined,
 } from "@mui/icons-material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UIContext } from "../../context";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 export const SideMenu = () => {
+  const router = useRouter();
+
   const { isSidemenuOpen, toggleSideMenu } = useContext(UIContext);
 
   return (
@@ -44,11 +49,15 @@ export const SideMenu = () => {
               placeholder="Search..."
               endAdornment={
                 <InputAdornment position="end">
-                  <IconButton aria-label="toggle password visibility">
+                  <IconButton
+                    type="submit"
+                    aria-label="toggle password visibility"
+                  >
                     <SearchOutlined />
                   </IconButton>
                 </InputAdornment>
               }
+              onSubmit={(e) => router.push(`/products?search=${e}`)}
             />
           </ListItem>
 
@@ -66,33 +75,49 @@ export const SideMenu = () => {
             <ListItemText primary="My orders" />
           </ListItem>
 
-          <ListItem button sx={{ display: { xs: "", sm: "none" } }}>
-            <ListItemIcon>
-              <MaleOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Men" />
-          </ListItem>
+          <NextLink href="/category/men" passHref>
+            <Link>
+              <ListItem button>
+                <ListItemIcon>
+                  <MaleOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Men" />
+              </ListItem>
+            </Link>
+          </NextLink>
 
-          <ListItem button sx={{ display: { xs: "", sm: "none" } }}>
-            <ListItemIcon>
-              <FemaleOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Women" />
-          </ListItem>
+          <NextLink href="/category/women" passHref>
+            <Link>
+              <ListItem button>
+                <ListItemIcon>
+                  <FemaleOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Women" />
+              </ListItem>
+            </Link>
+          </NextLink>
 
-          <ListItem button sx={{ display: { xs: "", sm: "none" } }}>
-            <ListItemIcon>
-              <EscalatorWarningOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Kids" />
-          </ListItem>
+          <NextLink href="/category/kid" passHref>
+            <Link>
+              <ListItem button>
+                <ListItemIcon>
+                  <EscalatorWarningOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Kids" />
+              </ListItem>
+            </Link>
+          </NextLink>
 
-          <ListItem button>
-            <ListItemIcon>
-              <VpnKeyOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Signin" />
-          </ListItem>
+          <NextLink href="/auth/login" passHref>
+            <Link>
+              <ListItem button>
+                <ListItemIcon>
+                  <VpnKeyOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Signin" />
+              </ListItem>
+            </Link>
+          </NextLink>
 
           <ListItem button>
             <ListItemIcon>
@@ -111,12 +136,17 @@ export const SideMenu = () => {
             </ListItemIcon>
             <ListItemText primary="Products" />
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Orders" />
-          </ListItem>
+
+          <NextLink href="/orders/history" passHref>
+            <Link>
+              <ListItem button>
+                <ListItemIcon>
+                  <ConfirmationNumberOutlined />
+                </ListItemIcon>
+                <ListItemText primary="Orders" />
+              </ListItem>
+            </Link>
+          </NextLink>
 
           <ListItem button>
             <ListItemIcon>

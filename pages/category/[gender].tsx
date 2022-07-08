@@ -12,9 +12,7 @@ const CategoryPage: NextPage = () => {
 
   const { gender = null } = router.query;
 
-  const { products, error, isLoading } = useProducts(
-    `/products?gender=${gender}`
-  );
+  const { data, error, isLoading } = useProducts(`/products?gender=${gender}`);
 
   if (error) return <div>Error</div>;
   if (isLoading) return <FullScreenLoading />;
@@ -31,7 +29,7 @@ const CategoryPage: NextPage = () => {
         All Products
       </Typography>
 
-      <ProductList products={products.data as Array<IProduct>} />
+      <ProductList products={data.data as Array<IProduct>} />
     </Layout>
   );
 };
