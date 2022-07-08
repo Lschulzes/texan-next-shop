@@ -14,12 +14,15 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useContext } from "react";
+import { UIContext } from "../../context";
 
 const Navbar = () => {
   const router = useRouter();
   const { query } = router;
   const gender = query?.gender;
+
+  const { openSideMenu } = useContext(UIContext);
 
   return (
     <nav>
@@ -78,7 +81,7 @@ const Navbar = () => {
             </Link>
           </NextLink>
 
-          <Button>Menu</Button>
+          <Button onClick={openSideMenu}>Menu</Button>
         </Toolbar>
       </AppBar>
     </nav>

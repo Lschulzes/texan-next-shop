@@ -7,10 +7,10 @@ import ProductList from "../../components/products/ProductList";
 import { useProducts } from "../../hooks";
 import { IProduct } from "../../interfaces";
 
-const CategoryPage: NextPage = (ctx) => {
+const CategoryPage: NextPage = () => {
   const router = useRouter();
 
-  const { gender } = router.query;
+  const { gender = null } = router.query;
 
   const { products, error, isLoading } = useProducts(
     `/products?gender=${gender}`
@@ -21,8 +21,8 @@ const CategoryPage: NextPage = (ctx) => {
 
   return (
     <Layout
-      title="Texan-Shop - CategoryPage"
-      description="Find the best texan products here"
+      title={`Texan-Shop - ${gender} clothing page`}
+      description={`Find the best texan products for ${gender} here`}
     >
       <Typography variant="h1" component="h1">
         Shop

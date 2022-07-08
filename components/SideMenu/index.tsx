@@ -23,13 +23,24 @@ import {
   SearchOutlined,
   VpnKeyOutlined,
 } from "@mui/icons-material";
+import { useContext } from "react";
+import { UIContext } from "../../context";
 
 export const SideMenu = () => {
+  const { isSidemenuOpen, closeSideMenu, openSideMenu } = useContext(UIContext);
+
+  const handleToggleSideMenu = () => {
+    if (isSidemenuOpen) return closeSideMenu();
+
+    openSideMenu();
+  };
+
   return (
     <Drawer
-      open={false}
+      open={isSidemenuOpen}
       anchor="right"
       sx={{ backdropFilter: "blur(4px)", transition: "all 0.5s ease-out" }}
+      onClose={handleToggleSideMenu}
     >
       <Box sx={{ width: 250, paddingTop: 5 }}>
         <List>
