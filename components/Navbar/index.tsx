@@ -22,7 +22,7 @@ const Navbar = () => {
   const { query } = router;
   const gender = query?.gender;
 
-  const { openSideMenu } = useContext(UIContext);
+  const { toggleSideMenu } = useContext(UIContext);
 
   return (
     <nav>
@@ -81,7 +81,7 @@ const Navbar = () => {
             </Link>
           </NextLink>
 
-          <Button onClick={openSideMenu}>Menu</Button>
+          <Button onClick={toggleSideMenu}>Menu</Button>
         </Toolbar>
       </AppBar>
     </nav>

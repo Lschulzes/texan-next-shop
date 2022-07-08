@@ -4,8 +4,7 @@ interface ContextProps {
   isSidemenuOpen: boolean;
 
   // Methods
-  closeSideMenu: () => void;
-  openSideMenu: () => void;
+  toggleSideMenu: () => void;
 }
 
 export const UIContext = createContext({} as ContextProps);
