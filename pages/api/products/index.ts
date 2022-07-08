@@ -4,7 +4,7 @@ import { db, SHOP_CONSTANTS } from "../../../database";
 import { IProduct, ProductGender } from "../../../interfaces";
 import { ProductModel } from "../../../models";
 
-type Data = {
+export type APIProductsResponse = {
   message?: string;
   status?: "failed" | "success";
   results?: number;
@@ -13,7 +13,7 @@ type Data = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<APIProductsResponse>
 ) {
   switch (req.method) {
     case "GET":
@@ -23,7 +23,10 @@ export default async function handler(
   res.status(400).json({ message: "route not found!" });
 }
 
-const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+const getProducts = async (
+  req: NextApiRequest,
+  res: NextApiResponse<APIProductsResponse>
+) => {
   const { gender = null, search = null } = req.query;
 
   let condition: FilterQuery<IProduct> = {};
