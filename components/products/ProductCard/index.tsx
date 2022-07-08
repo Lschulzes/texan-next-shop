@@ -19,6 +19,7 @@ const ProductCard = ({ product }: Props) => {
   const { slug, images, description, title, price } = product;
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const productImage = useMemo(() => {
     return !isHovered ? images[0] : images[1];
@@ -38,16 +39,17 @@ const ProductCard = ({ product }: Props) => {
             <CardActionArea>
               <CardMedia
                 component="img"
-                image={`products/${productImage}`}
+                image={`/products/${productImage}`}
                 alt={description}
                 className="fadeIn"
+                onLoad={() => setIsImageLoaded(true)}
               />
             </CardActionArea>
           </Link>
         </NextLink>
       </Card>
 
-      <Box mt={1} className="fadeIn">
+      <Box mt={1} display={isImageLoaded ? "block" : "none"} className="fadeIn">
         <Typography>{title}</Typography>
         <Typography>${price}</Typography>
       </Box>

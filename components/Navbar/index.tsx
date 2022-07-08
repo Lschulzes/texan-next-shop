@@ -13,9 +13,14 @@ import {
   Typography,
 } from "@mui/material";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 const Navbar = () => {
+  const router = useRouter();
+  const { query } = router;
+  const gender = query?.gender;
+
   return (
     <nav>
       <AppBar>
@@ -33,20 +38,26 @@ const Navbar = () => {
 
           <Box flex={1} />
 
-          <Box display={{ xs: "none", sm: "block" }}>
+          <Box display={{ xs: "none", sm: "flex" }} gap={2}>
             <NextLink href="/category/men" passHref>
               <Link>
-                <Button>Men</Button>
+                <Button color={gender === "men" ? "primary" : "info"}>
+                  Men
+                </Button>
               </Link>
             </NextLink>
             <NextLink href="/category/women" passHref>
               <Link>
-                <Button>Women</Button>
+                <Button color={gender === "women" ? "primary" : "info"}>
+                  Women
+                </Button>
               </Link>
             </NextLink>
-            <NextLink href="/category/kids" passHref>
+            <NextLink href="/category/kid" passHref>
               <Link>
-                <Button>Kids</Button>
+                <Button color={gender === "kid" ? "primary" : "info"}>
+                  Kids
+                </Button>
               </Link>
             </NextLink>
           </Box>
