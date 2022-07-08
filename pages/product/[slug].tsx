@@ -1,25 +1,24 @@
 import { Button, Chip, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
+import FullScreenLoading from "../../components/FullScreenLoading";
 import ItemCounter from "../../components/ItemCounter";
 import Layout from "../../components/Layout";
 import SizeSelector from "../../components/products/SizeSelector";
 import Slideshow from "../../components/Slideshow";
+import { getProductBySlug } from "../../database/dbProducts";
 import { initialData } from "../../database/products";
 import { useProducts } from "../../hooks";
-import { ISize } from "../../interfaces";
+import { IProduct, ISize } from "../../interfaces";
 
-const Slug = () => {
+type PageProps = {
+  product: IProduct | null;
+};
+
+const Slug: FC<PageProps> = ({ product }) => {
   const [currentSize, setCurrentSize] = useState<ISize>();
-
-  const router = useRouter();
-
-  const { slug = null } = router.query;
-
-  const { data } = useProducts(`/products/${slug}`);
-
-  const product = data.data?.[0];
 
   if (!product) return <div>Error</div>;
 
@@ -64,6 +63,16 @@ const Slug = () => {
       </Grid>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({
+  query,
+}) => {
+  const { slug = "" } = query;
+
+  const product = await getProductBySlug(String(slug));
+
+  return { props: { product } };
 };
 
 export default Slug;
