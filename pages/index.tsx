@@ -11,6 +11,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import useSWR from "swr";
+import FullScreenLoading from "../components/FullScreenLoading";
 import Layout from "../components/Layout";
 import ProductList from "../components/products/ProductList";
 import { initialData } from "../database/products";
@@ -21,18 +22,7 @@ const Home: NextPage = () => {
   const { products, error, isLoading } = useProducts("/products");
 
   if (error) return <div>Error</div>;
-  if (isLoading)
-    return (
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        height="calc(100vh - 200px)"
-        width="100%"
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (isLoading) return <FullScreenLoading />;
 
   return (
     <Layout
