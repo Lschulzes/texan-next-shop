@@ -28,24 +28,17 @@ import { useContext, useEffect, useState } from "react";
 import { UIContext } from "../../context";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
+import SearchInput from "../SearchInput";
 
 export const SideMenu = () => {
   const router = useRouter();
 
   const { isSidemenuOpen, toggleSideMenu } = useContext(UIContext);
 
-  const [searchTerm, setSearchTerm] = useState("");
-
   const navigateTo = (url: string) => {
-    toggleSideMenu();
+    if (isSidemenuOpen) toggleSideMenu();
 
     router.push(url);
-  };
-
-  const handleSearchTerm = () => {
-    if (searchTerm.trim().length === 0) return;
-
-    navigateTo(`/search/${searchTerm}`);
   };
 
   return (
@@ -58,27 +51,7 @@ export const SideMenu = () => {
       <Box sx={{ width: 250, paddingTop: 5 }}>
         <List>
           <ListItem>
-            <Input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDownCapture={(e) =>
-                e.key === "Enter" ? handleSearchTerm() : null
-              }
-              placeholder="Search..."
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    type="submit"
-                    aria-label="toggle password visibility"
-                    onClick={handleSearchTerm}
-                  >
-                    <SearchOutlined />
-                  </IconButton>
-                </InputAdornment>
-              }
-              onSubmit={(e) => router.push(`/products?search=${e}`)}
-            />
+            <SearchInput />
           </ListItem>
 
           <ListItem button>
