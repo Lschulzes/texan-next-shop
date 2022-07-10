@@ -24,7 +24,7 @@ import {
   SearchOutlined,
   VpnKeyOutlined,
 } from "@mui/icons-material";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UIContext } from "../../context";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -33,6 +33,20 @@ export const SideMenu = () => {
   const router = useRouter();
 
   const { isSidemenuOpen, toggleSideMenu } = useContext(UIContext);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigateTo = (url: string) => {
+    toggleSideMenu();
+
+    router.push(url);
+  };
+
+  const handleSearchTerm = () => {
+    if (searchTerm.trim().length === 0) return;
+
+    navigateTo(`/search/${searchTerm}`);
+  };
 
   return (
     <Drawer
@@ -46,12 +60,18 @@ export const SideMenu = () => {
           <ListItem>
             <Input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDownCapture={(e) =>
+                e.key === "Enter" ? handleSearchTerm() : null
+              }
               placeholder="Search..."
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
                     type="submit"
                     aria-label="toggle password visibility"
+                    onClick={handleSearchTerm}
                   >
                     <SearchOutlined />
                   </IconButton>
@@ -75,49 +95,33 @@ export const SideMenu = () => {
             <ListItemText primary="My orders" />
           </ListItem>
 
-          <NextLink href="/category/men" passHref>
-            <Link>
-              <ListItem button>
-                <ListItemIcon>
-                  <MaleOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Men" />
-              </ListItem>
-            </Link>
-          </NextLink>
+          <ListItem button onClick={() => navigateTo("/category/men")}>
+            <ListItemIcon>
+              <MaleOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Men" />
+          </ListItem>
 
-          <NextLink href="/category/women" passHref>
-            <Link>
-              <ListItem button>
-                <ListItemIcon>
-                  <FemaleOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Women" />
-              </ListItem>
-            </Link>
-          </NextLink>
+          <ListItem button onClick={() => navigateTo("/category/women")}>
+            <ListItemIcon>
+              <FemaleOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Women" />
+          </ListItem>
 
-          <NextLink href="/category/kid" passHref>
-            <Link>
-              <ListItem button>
-                <ListItemIcon>
-                  <EscalatorWarningOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Kids" />
-              </ListItem>
-            </Link>
-          </NextLink>
+          <ListItem button onClick={() => navigateTo("/category/kid")}>
+            <ListItemIcon>
+              <EscalatorWarningOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Kids" />
+          </ListItem>
 
-          <NextLink href="/auth/login" passHref>
-            <Link>
-              <ListItem button>
-                <ListItemIcon>
-                  <VpnKeyOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Signin" />
-              </ListItem>
-            </Link>
-          </NextLink>
+          <ListItem button onClick={() => navigateTo("/category/login")}>
+            <ListItemIcon>
+              <VpnKeyOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Signin" />
+          </ListItem>
 
           <ListItem button>
             <ListItemIcon>
@@ -137,16 +141,12 @@ export const SideMenu = () => {
             <ListItemText primary="Products" />
           </ListItem>
 
-          <NextLink href="/orders/history" passHref>
-            <Link>
-              <ListItem button>
-                <ListItemIcon>
-                  <ConfirmationNumberOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Orders" />
-              </ListItem>
-            </Link>
-          </NextLink>
+          <ListItem button onClick={() => navigateTo("/orders/history")}>
+            <ListItemIcon>
+              <ConfirmationNumberOutlined />
+            </ListItemIcon>
+            <ListItemText primary="Orders" />
+          </ListItem>
 
           <ListItem button>
             <ListItemIcon>
