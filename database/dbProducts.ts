@@ -11,3 +11,13 @@ export const getProductBySlug = async (
 
   return JSON.parse(JSON.stringify(product));
 };
+
+export const getAllProductsSlugs = async (): Promise<Array<{
+  slug: string;
+}> | null> => {
+  await db.connect();
+  const data = await ProductModel.find().select("slug -_id").lean();
+  await db.disconnect();
+
+  return JSON.parse(JSON.stringify(data));
+};

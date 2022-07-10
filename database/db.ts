@@ -25,5 +25,5 @@ export const connect = async () => {
 };
 
 export const disconnect = async () => {
-  if (mongoConnection.status) await mongoose.disconnect();
+  if (mongoConnection.status) return await mongoose.disconnect();
 };
