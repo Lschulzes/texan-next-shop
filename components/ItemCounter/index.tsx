@@ -1,22 +1,32 @@
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const INITIAL_QUANTITY = 1;
 
 type Props = {
   maxNumber: number;
+  onQuantityChange?: (count: number) => void;
 };
 
-const ItemCounter = ({ maxNumber }: Props) => {
-  const [count, setCount] = useState(1);
+const ItemCounter = ({ maxNumber, onQuantityChange }: Props) => {
+  const [count, setCount] = useState(INITIAL_QUANTITY);
 
   const handleChangeCount = (add: boolean) => {
     setCount((cur) => {
       if (cur <= 1 && !add) return cur;
       if (cur >= maxNumber && add) return cur;
 
-      return add ? ++cur : --cur;
+      const amountToReturn = add ? ++cur : --cur;
+
+      onQuantityChange?.(amountToReturn);
+      return amountToReturn;
     });
   };
+
+  useEffect(() => {
+    setCount(INITIAL_QUANTITY);
+  }, [maxNumber]);
 
   return (
     <Box display="flex" alignItems="center">

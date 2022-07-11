@@ -21,8 +21,9 @@ type CartProviderProps = {
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [state, dispatch] = useReducer(CartReducer, CART_INITIAL_STATE);
 
-  const addProduct = (product: ICartProduct) =>
-    dispatch({ type: "Cart - Add Product", payload: product });
+  const addProduct = (product: ICartProduct) => {
+    dispatch({ type: "Cart - Add Product", payload: { ...product } });
+  };
 
   return (
     <CartContext.Provider

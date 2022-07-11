@@ -11,7 +11,9 @@ export const CartReducer = (
 ): CartState => {
   switch (action.type) {
     case "Cart - Add Product":
+      console.log("Called");
       return addProduct(state, action.payload);
+
     case "Cart - Load from cookies | storage":
       return {
         ...state,
@@ -26,9 +28,9 @@ const addProduct = (state: CartState, payload: ICartProduct): CartState => {
     (product) => product._id === payload._id
   );
 
-  if (productIndex) {
+  if (productIndex >= 0) {
     const products = state.products;
-    ++products[productIndex].quantity;
+    products[productIndex].quantity += payload.quantity;
 
     return { ...state, products };
   }

@@ -1,23 +1,46 @@
 import { Button, Chip, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
-import React, { FC, useState } from "react";
+import { useRouter } from "next/router";
+import React, { FC, useContext, useEffect, useState } from "react";
 import ItemCounter from "../../components/ItemCounter";
 import Layout from "../../components/Layout";
 import SizeSelector from "../../components/products/SizeSelector";
 import Slideshow from "../../components/Slideshow";
+import { CartContext } from "../../context";
 import {
   getAllProductsSlugs,
   getProductBySlug,
 } from "../../database/dbProducts";
-import { IProduct, ISize } from "../../interfaces";
+import { ICartProduct, IProduct, ISize } from "../../interfaces";
 
 type PageProps = {
   product: IProduct;
 };
 
 const Slug: FC<PageProps> = ({ product }) => {
-  const [currentSize, setCurrentSize] = useState<ISize>();
+  const router = useRouter();
+
+  const [productForCart, setProductForCart] = useState<ICartProduct>(
+    mapProductToCartProduct(product)
+  );
+
+  const { addProduct, products } = useContext(CartContext);
+
+  const handleChangeSize = (size: ISize) => {
+    setProductForCart((product) => ({ ...product, size }));
+  };
+
+  const handleChangeQuantity = (quantity: number) => {
+    setProductForCart((product) => ({ ...product, quantity }));
+  };
+
+  const handleAddProductToCart = () => {
+    if (!productForCart.quantity) return;
+
+    addProduct(productForCart);
+    router.push(`/cart`);
+  };
 
   if (!product) return <div>No product found</div>;
 
@@ -39,19 +62,29 @@ const Slug: FC<PageProps> = ({ product }) => {
 
             <Box my={2} display="flex" alignItems="center">
               <Typography variant="subtitle2">Quantity</Typography>
-              <ItemCounter maxNumber={product.inStock} />
+              <ItemCounter
+                onQuantityChange={handleChangeQuantity}
+                maxNumber={product.inStock}
+              />
               <SizeSelector
-                onClick={(size) => setCurrentSize(size)}
-                selectedSize={currentSize}
+                onChangeSize={handleChangeSize}
+                selectedSize={productForCart.size}
                 sizes={product.sizes}
               />
             </Box>
 
+            {products?.[0]?.quantity}
+
             {product.inStock === 0 ? (
               <Chip color="error" label="Not Available" variant="outlined" />
             ) : (
-              <Button color="secondary" className="circular-btn">
-                Add to cart
+              <Button
+                disabled={!productForCart.size}
+                color="secondary"
+                className="circular-btn"
+                onClick={handleAddProductToCart}
+              >
+                {productForCart.size ? "Add to cart" : "Select a size"}
               </Button>
             )}
 
@@ -92,3 +125,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default Slug;
+
+/************************ */
+const mapProductToCartProduct = (product: IProduct) => ({
+  _id: product._id,
+  gender: product.gender,
+  image: product.images[0],
+  price: product.price,
+  slug: product.slug,
+  title: product.title,
+  quantity: 1,
+  size: undefined,
+});

@@ -5,15 +5,15 @@ import { ISize } from "../../../interfaces";
 type Props = {
   selectedSize?: string;
   sizes: Array<ISize>;
-  onClick: (size: ISize) => void;
+  onChangeSize: (size: ISize) => void;
 };
 
-const SizeSelector = ({ selectedSize, sizes, onClick }: Props) => {
+const SizeSelector = ({ selectedSize, sizes, onChangeSize }: Props) => {
   return (
     <Box>
       {sizes.map((size) => (
         <Button
-          onClick={() => onClick(size)}
+          onClick={() => onChangeSize(size)}
           key={size}
           size="small"
           color={selectedSize === size ? "primary" : "info"}
