@@ -47,11 +47,13 @@ const Slug: FC<PageProps> = ({ product }) => {
               />
             </Box>
 
-            <Button color="secondary" className="circular-btn">
-              Add to cart
-            </Button>
-
-            {/* <Chip label="Not available" color="error" variant="outlined" /> */}
+            {product.inStock === 0 ? (
+              <Chip color="error" label="Not Available" variant="outlined" />
+            ) : (
+              <Button color="secondary" className="circular-btn">
+                Add to cart
+              </Button>
+            )}
 
             <Box mt={3}>
               <Typography variant="subtitle2">Description</Typography>
@@ -63,24 +65,6 @@ const Slug: FC<PageProps> = ({ product }) => {
     </Layout>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps<PageProps> = async ({
-//   query,
-// }) => {
-//   const { slug = "" } = query;
-
-//   const product = await getProductBySlug(String(slug));
-
-//   if (!product)
-//     return {
-//       redirect: {
-//         destination: "/",
-//         permanent: false,
-//       },
-//     };
-
-//   return { props: { product } };
-// };
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await getAllProductsSlugs();

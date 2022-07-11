@@ -6,6 +6,7 @@ import {
   Box,
   Typography,
   Link,
+  Chip,
 } from "@mui/material";
 import NextLink from "next/link";
 import React, { useMemo, useState } from "react";
@@ -37,6 +38,19 @@ const ProductCard = ({ product }: Props) => {
         <NextLink href={`/product/${slug}`} passHref prefetch={false}>
           <Link>
             <CardActionArea>
+              {product.inStock === 0 && (
+                <Chip
+                  color="primary"
+                  label="Not Available"
+                  sx={{
+                    position: "absolute",
+                    zIndex: 99,
+                    top: "0.75rem",
+                    left: "0.75rem",
+                  }}
+                />
+              )}
+
               <CardMedia
                 component="img"
                 image={`/products/${productImage}`}
