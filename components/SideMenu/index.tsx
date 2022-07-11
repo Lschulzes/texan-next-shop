@@ -51,7 +51,7 @@ export const SideMenu = () => {
       <Box sx={{ width: 250, paddingTop: 5 }}>
         <List>
           <ListItem>
-            <SearchInput />
+            <SearchInput neverHide />
           </ListItem>
 
           <ListItem button>

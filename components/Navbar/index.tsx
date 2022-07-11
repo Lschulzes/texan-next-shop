@@ -14,15 +14,15 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { UIContext } from "../../context";
+import SearchInput from "../SearchInput";
 
 const Navbar = () => {
-  const router = useRouter();
-  const { query } = router;
-  const gender = query?.gender;
+  const { asPath } = useRouter();
 
   const { toggleSideMenu } = useContext(UIContext);
+  const [isSearchHidden, setIsSearchHidden] = useState(true);
 
   return (
     <nav>
@@ -41,33 +41,50 @@ const Navbar = () => {
 
           <Box flex={1} />
 
-          <Box display={{ xs: "none", sm: "flex" }} gap={2}>
-            <NextLink href="/category/men" passHref>
-              <Link>
-                <Button color={gender === "men" ? "primary" : "info"}>
-                  Men
-                </Button>
-              </Link>
-            </NextLink>
-            <NextLink href="/category/women" passHref>
-              <Link>
-                <Button color={gender === "women" ? "primary" : "info"}>
-                  Women
-                </Button>
-              </Link>
-            </NextLink>
-            <NextLink href="/category/kid" passHref>
-              <Link>
-                <Button color={gender === "kid" ? "primary" : "info"}>
-                  Kids
-                </Button>
-              </Link>
-            </NextLink>
-          </Box>
+          {isSearchHidden && (
+            <Box display={{ xs: "none", sm: "flex" }} gap={2}>
+              <NextLink href="/category/men" passHref>
+                <Link>
+                  <Button
+                    color={asPath === "/category/men" ? "primary" : "info"}
+                  >
+                    Men
+                  </Button>
+                </Link>
+              </NextLink>
+              <NextLink href="/category/women" passHref>
+                <Link>
+                  <Button
+                    color={asPath === "/category/women" ? "primary" : "info"}
+                  >
+                    Women
+                  </Button>
+                </Link>
+              </NextLink>
+              <NextLink href="/category/kid" passHref>
+                <Link>
+                  <Button
+                    color={asPath === "/category/kid" ? "primary" : "info"}
+                  >
+                    Kids
+                  </Button>
+                </Link>
+              </NextLink>
+            </Box>
+          )}
 
           <Box flex={1} />
 
-          <IconButton>
+          <SearchInput
+            onChangeHidden={(isHidden) => setIsSearchHidden(isHidden)}
+            hidden
+            sx={{ display: { xs: "none", sm: "flex" } }}
+          />
+
+          <IconButton
+            onClick={toggleSideMenu}
+            sx={{ display: { xs: "flex", sm: "none" } }}
+          >
             <SearchOutlined />
           </IconButton>
 
