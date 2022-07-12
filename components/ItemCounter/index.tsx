@@ -7,10 +7,15 @@ const INITIAL_QUANTITY = 1;
 type Props = {
   maxNumber: number;
   onQuantityChange?: (count: number) => void;
+  initialCount?: number;
 };
 
-const ItemCounter = ({ maxNumber, onQuantityChange }: Props) => {
-  const [count, setCount] = useState(INITIAL_QUANTITY);
+const ItemCounter = ({
+  maxNumber,
+  onQuantityChange,
+  initialCount = INITIAL_QUANTITY,
+}: Props) => {
+  const [count, setCount] = useState(initialCount);
 
   const handleChangeCount = (add: boolean) => {
     setCount((cur) => {

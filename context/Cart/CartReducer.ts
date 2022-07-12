@@ -3,7 +3,10 @@ import { CartState } from "./CartProvider";
 
 type CartActionType =
   | { type: "Cart - Add Product"; payload: ICartProduct }
-  | { type: "Cart - Load from cookies | storage"; payload: ICartProduct };
+  | {
+      type: "Cart - Load from cookies | storage";
+      payload: Array<ICartProduct>;
+    };
 
 export const CartReducer = (
   state: CartState,
@@ -11,12 +14,12 @@ export const CartReducer = (
 ): CartState => {
   switch (action.type) {
     case "Cart - Add Product":
-      console.log("Called");
       return addProduct(state, action.payload);
 
     case "Cart - Load from cookies | storage":
       return {
         ...state,
+        products: action.payload,
       };
     default:
       return state;

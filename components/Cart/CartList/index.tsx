@@ -8,27 +8,28 @@ import {
   Typography,
 } from "@mui/material";
 import NextLink from "next/link";
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "../../../context";
 import { initialData } from "../../../database/products";
 import ItemCounter from "../../ItemCounter";
-
-const products = initialData.products.slice(0, 3);
 
 type CartListProps = {
   editable?: boolean;
 };
 
 const CartList = ({ editable = false }: CartListProps) => {
+  const { products } = useContext(CartContext);
+
   return (
     <>
-      {products.map(({ slug, images, title, inStock, price }) => (
-        <Grid container spacing={2} mb={1} key={slug}>
+      {products.map(({ slug, image, title, _id, price, size, quantity }) => (
+        <Grid container spacing={2} mb={1} key={_id}>
           <Grid item xs={3}>
             <NextLink href={`/product/${slug}`}>
               <Link>
                 <CardActionArea>
                   <CardMedia
-                    image={`/products/${images[0]}`}
+                    image={`/products/${image}`}
                     sx={{ borderRadius: "5px" }}
                     component="img"
                   />
@@ -42,11 +43,11 @@ const CartList = ({ editable = false }: CartListProps) => {
               <Typography variant="body1">{title}</Typography>
 
               <Typography variant="body1">
-                Size: <strong>{"M"}</strong>
+                Size: <strong>{size}</strong>
               </Typography>
 
               {editable ? (
-                <ItemCounter maxNumber={inStock} />
+                <ItemCounter maxNumber={quantity} initialCount={quantity} />
               ) : (
                 <Typography variant="h5">3 items</Typography>
               )}
