@@ -14,6 +14,10 @@ type CartActionType =
   | {
       type: "Cart - Remove Product";
       payload: ICartProduct;
+    }
+  | {
+      type: "Cart - Update Stats";
+      payload: Array<ICartProduct>;
     };
 
 export const CartReducer = (
@@ -36,9 +40,27 @@ export const CartReducer = (
     case "Cart - Remove Product":
       return removeProduct(state, action.payload);
 
+    case "Cart - Update Stats":
+      return updateStats(state, action.payload);
+
     default:
       return state;
   }
+};
+
+const updateStats = (
+  state: CartState,
+  payload: Array<ICartProduct>
+): CartState => {
+  const subTotal = payload.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+  const discount = subTotal * 0.1;
+  const quantity = payload.reduce((acc, product) => acc + product.quantity, 0);
+  const total = subTotal - discount;
+
+  return { ...state, subTotal, discount, quantity, total };
 };
 
 const removeProduct = (state: CartState, payload: ICartProduct): CartState => {

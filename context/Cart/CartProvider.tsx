@@ -6,13 +6,17 @@ import Cookie from "js-cookie";
 export interface CartState {
   products: Array<ICartProduct>;
   quantity: number;
-  price: number;
+  total: number;
+  subTotal: number;
+  discount: number;
 }
 
 const CART_INITIAL_STATE: CartState = {
   products: [],
   quantity: 0,
-  price: 0,
+  total: 0,
+  discount: 0,
+  subTotal: 0,
 };
 
 type CartProviderProps = {
@@ -42,6 +46,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   }, []);
 
   useEffect(() => {
+    dispatch({ type: "Cart - Update Stats", payload: state.products });
+  }, [state.products]);
+
+  useEffect(() => {
     Cookie.set("texan_shop_cart", JSON.stringify(state.products));
   }, [state.products]);
 
@@ -54,6 +62,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       type: "Cart - Update Product Quantity",
       payload: { ...product },
     });
+    dispatch({ type: "Cart - Update Stats", payload: state.products });
   };
 
   const removeProduct = (product: ICartProduct) => {

@@ -1,7 +1,10 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "../../../context";
 
 const OrderSummary = () => {
+  const { discount, subTotal, quantity, total } = useContext(CartContext);
+
   return (
     <Grid container>
       <Grid item xs={6}>
@@ -9,7 +12,7 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>3</Typography>
+        <Typography>{quantity}</Typography>
       </Grid>
 
       <Grid item xs={6}>
@@ -17,7 +20,7 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>$155.36</Typography>
+        <Typography>${subTotal}</Typography>
       </Grid>
 
       <Grid item xs={6}>
@@ -25,7 +28,7 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>$15.54</Typography>
+        <Typography>${formatToTwoDecimal(discount)}</Typography>
       </Grid>
 
       <Divider sx={{ mt: 5 }} />
@@ -36,7 +39,7 @@ const OrderSummary = () => {
 
       <Grid item xs={6} display="flex" justifyContent="end">
         <Typography>
-          <strong>$140.00</strong>
+          <strong>${formatToTwoDecimal(total)}</strong>
         </Typography>
       </Grid>
     </Grid>
@@ -44,3 +47,6 @@ const OrderSummary = () => {
 };
 
 export default OrderSummary;
+
+const formatToTwoDecimal = (number: number) =>
+  (Math.round(number * 100) / 100).toFixed(2);
