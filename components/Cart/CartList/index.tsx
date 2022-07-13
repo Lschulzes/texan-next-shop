@@ -11,6 +11,7 @@ import NextLink from "next/link";
 import React, { useContext } from "react";
 import { CartContext } from "../../../context";
 import { initialData } from "../../../database/products";
+import { ICartProduct } from "../../../interfaces";
 import ItemCounter from "../../ItemCounter";
 
 type CartListProps = {
@@ -18,59 +19,76 @@ type CartListProps = {
 };
 
 const CartList = ({ editable = false }: CartListProps) => {
-  const { products } = useContext(CartContext);
+  const { products, updateProductQuantity } = useContext(CartContext);
+
+  const onProductQuantityChange = (count: number, product: ICartProduct) => {
+    product.quantity = count;
+    updateProductQuantity(product);
+  };
 
   return (
     <>
-      {products.map(({ slug, image, title, _id, price, size, quantity }) => (
-        <Grid container spacing={2} mb={1} key={_id}>
-          <Grid item xs={3}>
-            <NextLink href={`/product/${slug}`}>
-              <Link>
-                <CardActionArea>
-                  <CardMedia
-                    image={`/products/${image}`}
-                    sx={{ borderRadius: "5px" }}
-                    component="img"
+      {products.map((product) => {
+        const { slug, image, title, _id, price, size, quantity, inStock } =
+          product;
+        return (
+          <Grid container spacing={2} mb={1} key={_id}>
+            <Grid item xs={3}>
+              <NextLink href={`/product/${slug}`}>
+                <Link>
+                  <CardActionArea>
+                    <CardMedia
+                      image={`/products/${image}`}
+                      sx={{ borderRadius: "5px" }}
+                      component="img"
+                    />
+                  </CardActionArea>
+                </Link>
+              </NextLink>
+            </Grid>
+
+            <Grid item xs={7}>
+              <Box display="flex" flexDirection="column">
+                <Typography variant="body1">{title}</Typography>
+
+                <Typography variant="body1">
+                  Size: <strong>{size}</strong>
+                </Typography>
+
+                {editable ? (
+                  <ItemCounter
+                    maxNumber={inStock}
+                    count={quantity}
+                    onQuantityChange={(count) =>
+                      onProductQuantityChange(count, product)
+                    }
                   />
-                </CardActionArea>
-              </Link>
-            </NextLink>
-          </Grid>
+                ) : (
+                  <Typography variant="h5">
+                    {quantity} item{quantity > 1 ? "s" : ""}
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
 
-          <Grid item xs={7}>
-            <Box display="flex" flexDirection="column">
-              <Typography variant="body1">{title}</Typography>
+            <Grid
+              item
+              xs={2}
+              display="flex"
+              alignItems="center"
+              flexDirection="column"
+            >
+              <Typography variant="subtitle1">${price}</Typography>
 
-              <Typography variant="body1">
-                Size: <strong>{size}</strong>
-              </Typography>
-
-              {editable ? (
-                <ItemCounter maxNumber={quantity} initialCount={quantity} />
-              ) : (
-                <Typography variant="h5">3 items</Typography>
+              {editable && (
+                <Button variant="text" color="secondary">
+                  Remove
+                </Button>
               )}
-            </Box>
+            </Grid>
           </Grid>
-
-          <Grid
-            item
-            xs={2}
-            display="flex"
-            alignItems="center"
-            flexDirection="column"
-          >
-            <Typography variant="subtitle1">${price}</Typography>
-
-            {editable && (
-              <Button variant="text" color="secondary">
-                Remove
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-      ))}
+        );
+      })}
     </>
   );
 };

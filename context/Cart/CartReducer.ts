@@ -6,6 +6,10 @@ type CartActionType =
   | {
       type: "Cart - Load from cookies | storage";
       payload: Array<ICartProduct>;
+    }
+  | {
+      type: "Cart - Update Product Quantity";
+      payload: ICartProduct;
     };
 
 export const CartReducer = (
@@ -21,14 +25,31 @@ export const CartReducer = (
         ...state,
         products: action.payload,
       };
+
+    case "Cart - Update Product Quantity":
+      return updateProductQuantity(state, action.payload);
     default:
       return state;
   }
 };
 
+const updateProductQuantity = (
+  state: CartState,
+  payload: ICartProduct
+): CartState => {
+  state.products.map((product) => {
+    if (product._id === payload._id) return product;
+    if (product.size === payload.size) return product;
+
+    return payload;
+  });
+
+  return { ...state };
+};
+
 const addProduct = (state: CartState, payload: ICartProduct): CartState => {
   const productIndex = state.products.findIndex(
-    (product) => product._id === payload._id
+    (product) => product._id === payload._id && product.size === payload.size
   );
 
   if (productIndex >= 0) {

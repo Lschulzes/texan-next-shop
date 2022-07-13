@@ -9,4 +9,5 @@ export interface ICartProduct {
   title: string;
   gender: ProductGender;
   quantity: number;
+  inStock: number;
 }

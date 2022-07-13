@@ -65,6 +65,7 @@ const Slug: FC<PageProps> = ({ product }) => {
               <ItemCounter
                 onQuantityChange={handleChangeQuantity}
                 maxNumber={product.inStock}
+                count={productForCart.quantity}
               />
               <SizeSelector
                 onChangeSize={handleChangeSize}
@@ -72,8 +73,6 @@ const Slug: FC<PageProps> = ({ product }) => {
                 sizes={product.sizes}
               />
             </Box>
-
-            {products?.[0]?.quantity}
 
             {product.inStock === 0 ? (
               <Chip color="error" label="Not Available" variant="outlined" />
@@ -134,6 +133,7 @@ const mapProductToCartProduct = (product: IProduct) => ({
   price: product.price,
   slug: product.slug,
   title: product.title,
+  inStock: product.inStock,
   quantity: 1,
   size: undefined,
 });
