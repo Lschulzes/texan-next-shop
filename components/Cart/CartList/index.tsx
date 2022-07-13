@@ -19,7 +19,8 @@ type CartListProps = {
 };
 
 const CartList = ({ editable = false }: CartListProps) => {
-  const { products, updateProductQuantity } = useContext(CartContext);
+  const { products, updateProductQuantity, removeProduct } =
+    useContext(CartContext);
 
   const onProductQuantityChange = (count: number, product: ICartProduct) => {
     product.quantity = count;
@@ -81,7 +82,11 @@ const CartList = ({ editable = false }: CartListProps) => {
               <Typography variant="subtitle1">${price}</Typography>
 
               {editable && (
-                <Button variant="text" color="secondary">
+                <Button
+                  variant="text"
+                  color="secondary"
+                  onClick={() => removeProduct(product)}
+                >
                   Remove
                 </Button>
               )}
