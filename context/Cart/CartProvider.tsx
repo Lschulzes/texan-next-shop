@@ -46,10 +46,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   }, []);
 
   useEffect(() => {
-    dispatch({ type: "Cart - Update Stats", payload: state.products });
-  }, [state.products]);
+    dispatch({ type: "Cart - Update Stats" });
 
-  useEffect(() => {
     Cookie.set("texan_shop_cart", JSON.stringify(state.products));
   }, [state.products]);
 
@@ -62,7 +60,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       type: "Cart - Update Product Quantity",
       payload: { ...product },
     });
-    dispatch({ type: "Cart - Update Stats", payload: state.products });
   };
 
   const removeProduct = (product: ICartProduct) => {

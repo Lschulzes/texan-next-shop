@@ -24,7 +24,9 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6}>
-        <Typography>Discounts (10%)</Typography>
+        <Typography>
+          Discounts ({+(process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)
+        </Typography>
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">

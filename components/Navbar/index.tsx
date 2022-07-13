@@ -15,13 +15,14 @@ import {
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
-import { UIContext } from "../../context";
+import { CartContext, UIContext } from "../../context";
 import SearchInput from "../SearchInput";
 
 const Navbar = () => {
   const { asPath } = useRouter();
 
   const { toggleSideMenu } = useContext(UIContext);
+  const { quantity } = useContext(CartContext);
   const [isSearchHidden, setIsSearchHidden] = useState(true);
 
   return (
@@ -91,7 +92,7 @@ const Navbar = () => {
           <NextLink href="/cart" passHref>
             <Link>
               <IconButton>
-                <Badge badgeContent={2} color="secondary">
+                <Badge badgeContent={quantity} color="secondary">
                   <ShoppingCartCheckoutOutlined />
                 </Badge>
               </IconButton>
