@@ -1,4 +1,5 @@
 import { UserRolestype } from "../interfaces";
+import bcrypt from "bcryptjs";
 
 interface SeedProduct {
   description: string;
@@ -33,31 +34,31 @@ export const initialData: SeedData = {
     {
       name: "Lucas Schulze",
       email: "lschuze@schulzes.com",
-      password: "123456",
+      password: bcrypt.hashSync("123456"),
       role: "admin",
     },
     {
       name: "Xavier Johnson",
       email: "casxsserde@gmail.com",
-      password: "123456",
+      password: bcrypt.hashSync("123456"),
       role: "client",
     },
     {
       name: "Matthew Linkz",
       email: "sac@aasd.com",
-      password: "123456",
+      password: bcrypt.hashSync("123456"),
       role: "client",
     },
     {
       name: "Felipo nogueira",
       email: "fe_nogueira@google.com",
-      password: "123456",
+      password: bcrypt.hashSync("123456"),
       role: "client",
     },
     {
       name: "Fernando Herrera",
       email: "effe@google.com",
-      password: "123456",
+      password: bcrypt.hashSync("123456"),
       role: "admin",
     },
   ],
