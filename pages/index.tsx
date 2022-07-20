@@ -14,7 +14,7 @@ import useSWR from "swr";
 import FullScreenLoading from "../components/FullScreenLoading";
 import Layout from "../components/Layout";
 import ProductList from "../components/products/ProductList";
-import { initialData } from "../database/products";
+import { initialData } from "../database/seed-data";
 import { useProducts } from "../hooks";
 import { IProduct } from "../interfaces";
 

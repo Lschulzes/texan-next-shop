@@ -1,3 +1,5 @@
+import { UserRolestype } from "../interfaces";
+
 interface SeedProduct {
   description: string;
   images: Array<string>;
@@ -11,14 +13,54 @@ interface SeedProduct {
   gender: "men" | "women" | "kid" | "unisex";
 }
 
+interface SeedUser {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRolestype;
+}
+
 type ValidSizes = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 type ValidTypes = "shirts" | "pants" | "hoodies" | "hats";
 
 interface SeedData {
   products: Array<SeedProduct>;
+  users: Array<SeedUser>;
 }
 
 export const initialData: SeedData = {
+  users: [
+    {
+      name: "Lucas Schulze",
+      email: "lschuze@schulzes.com",
+      password: "123456",
+      role: "admin",
+    },
+    {
+      name: "Xavier Johnson",
+      email: "casxsserde@gmail.com",
+      password: "123456",
+      role: "client",
+    },
+    {
+      name: "Matthew Linkz",
+      email: "sac@aasd.com",
+      password: "123456",
+      role: "client",
+    },
+    {
+      name: "Felipo nogueira",
+      email: "fe_nogueira@google.com",
+      password: "123456",
+      role: "client",
+    },
+    {
+      name: "Fernando Herrera",
+      email: "effe@google.com",
+      password: "123456",
+      role: "admin",
+    },
+  ],
   products: [
     {
       description:

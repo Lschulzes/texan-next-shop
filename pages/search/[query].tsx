@@ -19,7 +19,7 @@ import {
   getAllProducts,
   getAllProductsByTerm,
 } from "../../database/dbProducts";
-import { initialData } from "../../database/products";
+import { initialData } from "../../database/seed-data";
 import { useProducts } from "../../hooks";
 import { IProduct } from "../../interfaces";
 

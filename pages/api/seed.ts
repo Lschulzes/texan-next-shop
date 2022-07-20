@@ -1,12 +1,13 @@
 import { ProductModel } from "./../../models/ProductModel";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../database";
-import { initialData } from "../../database/products";
-import { IProduct } from "../../interfaces";
+import { initialData } from "../../database/seed-data";
+import { IProduct, IUser } from "../../interfaces";
+import UserModel from "../../models/UserModel";
 
 type Data = {
   message: string;
-  data?: Array<IProduct>;
+  data?: { products: Array<IProduct>; users: Array<IUser> };
 };
 
 export default async function handler(
@@ -30,9 +31,12 @@ export default async function handler(
 const getDB = async (res: NextApiResponse<Data>) => {
   await db.connect();
   const products = await ProductModel.find();
+  const users = await UserModel.find();
   await db.disconnect();
 
-  return res.status(200).json({ message: "Products", data: products });
+  return res
+    .status(200)
+    .json({ message: "Products", data: { products, users } });
 };
 
 const seedDB = async (res: NextApiResponse<Data>) => {
@@ -40,6 +44,9 @@ const seedDB = async (res: NextApiResponse<Data>) => {
 
   await ProductModel.deleteMany();
   await ProductModel.insertMany(initialData.products);
+
+  await UserModel.deleteMany();
+  await UserModel.insertMany(initialData.users);
 
   await db.disconnect();
 
