@@ -1,10 +1,12 @@
-import { Button, Grid, Link, TextField, Typography } from "@mui/material";
+import { Button, Chip, Grid, Link, TextField, Typography } from "@mui/material";
 import validator from "validator";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import AuthLayout from "../../components/AuthLayout";
 import { useForm } from "react-hook-form";
+import { texanAPI } from "../../api";
+import { ErrorOutline } from "@mui/icons-material";
 
 type FormInput = {
   email: string;
@@ -19,9 +21,21 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<FormInput>();
 
-  const onLoginUser = (data: FormInput) => {
-    console.log({ data });
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onLoginUser = async (data: FormInput) => {
+    try {
+      await texanAPI.post("/user/login", data);
+    } catch (error) {
+      setErrorMessage((error as any).response.data.message);
+    }
   };
+
+  const { email, password } = watch();
+
+  useEffect(() => {
+    setErrorMessage("");
+  }, [email, password]);
 
   return (
     <AuthLayout title={"Login"}>
@@ -66,6 +80,18 @@ const LoginPage = () => {
                 helperText={errors.password?.message}
               />
             </Grid>
+
+            {errorMessage && (
+              <Grid item xs={12}>
+                <Chip
+                  sx={{ display: "flex" }}
+                  color="error"
+                  className="fadeIn"
+                  icon={<ErrorOutline />}
+                  label={errorMessage}
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <Button
