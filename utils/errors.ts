@@ -29,7 +29,7 @@ export const handleMultipleMongooseErrors = (err: any): AppError => {
   return new AppError(message, err.statusCode);
 };
 
-class AppError extends Error {
+export class AppError extends Error {
   public status: string;
   constructor(message: string, public statusCode: number) {
     super(message);
