@@ -11,7 +11,7 @@ type Data = {
   message?: string;
   status: "success" | "failed";
   token?: string;
-  user?: Partial<IUser>;
+  user?: Pick<IUser, "_id" | "email" | "role" | "name">;
 };
 
 export default async function handler(
@@ -34,7 +34,7 @@ const validateJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   try {
     const _id = await getIdFromToken(token);
     await db.connect();
-    const user = await UserModel.findById(_id);
+    const user = await UserModel.findById(_id).select("_id name role email");
     await db.disconnect();
 
     if (!user) throw new AppError("No user with such id", 404);
