@@ -1,4 +1,13 @@
 export const handleMultipleMongooseErrors = (err: any): AppError => {
+  if (err.code === DUPLICATE_KEY_CODE) {
+    const key = Object.keys(err.keyPattern)[0];
+
+    return new AppError(
+      `Key ${key} should be unique, "${err.keyValue[key]}" already exists!`,
+      422
+    );
+  }
+
   const allErrors = Object.values(err.errors);
 
   const startingMessage = `${
@@ -6,7 +15,8 @@ export const handleMultipleMongooseErrors = (err: any): AppError => {
   } Validation Error${allErrors.length > 1 ? "s" : ""} Found:`;
 
   const message = allErrors.reduce(
-    (prev: string, el: any) => `${prev} | ${el.path}: ${el.message}`,
+    (prev: string, el: any, index: number) =>
+      `${prev} ${index > 0 && "|"} ${el.path}: ${el.message}`,
     startingMessage
   );
 
@@ -15,10 +25,12 @@ export const handleMultipleMongooseErrors = (err: any): AppError => {
 
 class AppError extends Error {
   public status: string;
-  constructor(message: string, statusCode: number) {
+  constructor(message: string, public statusCode: number) {
     super(message);
     this.status = `${statusCode}`.charAt(0) === "4" ? "fail" : "error";
 
     Error.captureStackTrace(this, this.constructor);
   }
 }
+
+const DUPLICATE_KEY_CODE = 11000;

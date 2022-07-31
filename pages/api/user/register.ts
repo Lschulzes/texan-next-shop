@@ -59,7 +59,7 @@ const registerUser = async (
     const AppError = handleMultipleMongooseErrors(err);
 
     return res
-      .status(500)
+      .status(AppError.statusCode)
       .json({ message: AppError.message, status: AppError.status });
   }
 };
