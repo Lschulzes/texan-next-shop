@@ -1,4 +1,10 @@
 export const handleMultipleMongooseErrors = (err: any): AppError => {
+  if (err?.errors?.email) {
+    const { message = "" } = err.errors.email?.properties;
+
+    return new AppError(message, 400);
+  }
+
   if (err.code === DUPLICATE_KEY_CODE) {
     const key = Object.keys(err.keyPattern)[0];
 
