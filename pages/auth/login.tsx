@@ -34,7 +34,7 @@ const LoginPage = () => {
     try {
       await loginUser(formData);
 
-      router.replace(`${previousPath}`);
+      router.push(`${previousPath}`);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }

@@ -1,19 +1,17 @@
-import { RemoveShoppingCartOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
   FormControl,
   Grid,
-  InputLabel,
-  Link,
   MenuItem,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
-import NextLink from "next/link";
+import { GetServerSideProps } from "next";
 import React from "react";
 import Layout from "../../components/Layout";
+import { getIdFromToken } from "../../utils";
 
 const AddressPage = () => {
   return (
@@ -61,6 +59,24 @@ const AddressPage = () => {
       </Grid>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const { token = "" } = req.cookies;
+  let userId = "";
+
+  try {
+    userId = await getIdFromToken(token);
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/auth/login?previousPath=/checkout/address",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
 };
 
 export default AddressPage;
