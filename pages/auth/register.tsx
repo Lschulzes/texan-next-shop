@@ -33,8 +33,7 @@ const RegisterPage = () => {
 
   const onRegisterUser = async (data: FormInput) => {
     try {
-      const res = await texanAPI.post("/user/register", data);
-      console.log(res.data);
+      await texanAPI.post("/user/register", data);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }

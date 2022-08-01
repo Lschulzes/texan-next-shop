@@ -8,10 +8,7 @@ export const handleMultipleMongooseErrors = (err: any): AppError => {
   if (err.code === DUPLICATE_KEY_CODE) {
     const key = Object.keys(err.keyPattern)[0];
 
-    return new AppError(
-      `Key ${key} should be unique, "${err.keyValue[key]}" already exists!`,
-      422
-    );
+    return new AppError(`${key} is already taken!`, 422);
   }
 
   const allErrors = Object.values(err.errors);
