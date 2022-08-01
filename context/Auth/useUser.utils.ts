@@ -1,6 +1,6 @@
 import { IUser } from "../../interfaces";
-
-export type setBaseInfoArgs = { token: string };
+import { FormInput } from "../../pages/auth/login";
+import { RegisterFormInput } from "../../pages/auth/register";
 
 export type UserContextState = {
   user: IUser | null;
@@ -10,15 +10,8 @@ export type UserContextState = {
   isAuthenticated: boolean;
 
   logoutUser: () => void;
-  setBaseInfo: ({ token }: setBaseInfoArgs) => void;
-};
-
-export type BaseInfo = {
-  token: string | null;
-};
-
-export const INITIAL_BASE_INFO = {
-  token: null,
+  loginUser: (formData: FormInput) => Promise<void>;
+  registerUser: (formData: RegisterFormInput) => Promise<void>;
 };
 
 export const USER_KEY = "@texan-base-info";

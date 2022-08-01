@@ -8,8 +8,9 @@ import { useForm } from "react-hook-form";
 import { texanAPI } from "../../api";
 import { ErrorOutline } from "@mui/icons-material";
 import useUser from "../../context/Auth/useUser";
+import Cookies from "js-cookie";
 
-type FormInput = {
+export type FormInput = {
   email: string;
   password: string;
 };
@@ -23,12 +24,11 @@ const LoginPage = () => {
   } = useForm<FormInput>();
 
   const [errorMessage, setErrorMessage] = useState("");
-  const { setBaseInfo } = useUser();
+  const { loginUser } = useUser();
 
   const onLoginUser = async (formData: FormInput) => {
     try {
-      const { data } = await texanAPI.post("/user/login", formData);
-      setBaseInfo({ token: data.token });
+      await loginUser(formData);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }

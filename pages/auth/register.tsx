@@ -14,8 +14,9 @@ import validator from "validator";
 import { texanAPI } from "../../api";
 import { useEffect, useState } from "react";
 import { ErrorOutline } from "@mui/icons-material";
+import useUser from "../../context/Auth/useUser";
 
-type FormInput = {
+export type RegisterFormInput = {
   name: string;
   email: string;
   password: string;
@@ -27,13 +28,15 @@ const RegisterPage = () => {
     register,
     watch,
     formState: { errors },
-  } = useForm<FormInput>();
+  } = useForm<RegisterFormInput>();
+
+  const { registerUser } = useUser();
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const onRegisterUser = async (data: FormInput) => {
+  const onRegisterUser = async (data: RegisterFormInput) => {
     try {
-      await texanAPI.post("/user/register", data);
+      await registerUser(data);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }

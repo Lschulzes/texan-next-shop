@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, {
   createContext,
   useCallback,
@@ -7,15 +8,10 @@ import React, {
   useState,
 } from "react";
 import { texanAPI } from "../../api";
-import { usePersistState } from "../../hooks";
 import { IUser } from "../../interfaces";
-import {
-  BaseInfo,
-  INITIAL_BASE_INFO,
-  setBaseInfoArgs,
-  USER_KEY,
-  UserContextState,
-} from "./useUser.utils";
+import { FormInput } from "../../pages/auth/login";
+import { RegisterFormInput } from "../../pages/auth/register";
+import { UserContextState } from "./useUser.utils";
 
 const UserContext = createContext<UserContextState>({
   user: null,
@@ -23,7 +19,8 @@ const UserContext = createContext<UserContextState>({
   isAuthenticated: false,
 
   logoutUser: () => null,
-  setBaseInfo: ({ token }: setBaseInfoArgs) => token && null,
+  loginUser: (formData: FormInput) => formData && Promise.resolve(),
+  registerUser: (formData: RegisterFormInput) => formData && Promise.resolve(),
 });
 
 export const UserProvider = (props: { children: React.ReactNode }) => {
@@ -31,15 +28,11 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [baseInfo, setBaseInfo] = usePersistState<BaseInfo>(
-    USER_KEY,
-    INITIAL_BASE_INFO
-  );
-
-  const { token } = baseInfo;
+  const token = Cookies.get("token");
 
   useEffect(() => {
-    if (isAuthenticated || !!user || !token) return;
+    console.log({ token });
+    if (!!user || isAuthenticated || !token) return;
     const controller = new AbortController();
 
     (async () => {
@@ -53,23 +46,47 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
     })();
 
     return () => controller.abort();
-  }, [isAuthenticated, user, token]);
+  }, [user, isAuthenticated, token]);
+
+  const loginUser = useCallback(async (formData: FormInput) => {
+    setIsLoading(true);
+    const { data } = await texanAPI.post("/user/login", formData);
+    setIsLoading(false);
+    if (!data.user) return;
+
+    Cookies.set("token", data.token);
+
+    setUser(data.user);
+    setIsAuthenticated(true);
+  }, []);
+
+  const registerUser = useCallback(async (formData: RegisterFormInput) => {
+    setIsLoading(true);
+    const { data } = await texanAPI.post("/user/register", formData);
+    setIsLoading(false);
+    if (!data.user) return;
+
+    Cookies.set("token", data.token);
+
+    setUser(data.user);
+    setIsAuthenticated(true);
+  }, []);
 
   const logoutUser = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
-    setBaseInfo(INITIAL_BASE_INFO);
-  }, [setBaseInfo]);
+  }, []);
 
   const state: UserContextState = useMemo(
     () => ({
       user,
       isLoading,
       isAuthenticated,
-      setBaseInfo,
       logoutUser,
+      loginUser,
+      registerUser,
     }),
-    [user, isAuthenticated, setBaseInfo, logoutUser, isLoading]
+    [user, isAuthenticated, logoutUser, isLoading, loginUser, registerUser]
   );
 
   return (
