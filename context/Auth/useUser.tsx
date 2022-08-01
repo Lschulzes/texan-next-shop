@@ -74,7 +74,7 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   }, []);
 
   const logoutUser = useCallback(() => {
-    Cookies.set("token", void 0);
+    Cookies.remove("token");
     setUser(null);
     setIsAuthenticated(false);
   }, []);

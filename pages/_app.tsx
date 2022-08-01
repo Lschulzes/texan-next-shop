@@ -15,8 +15,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           fetch(input, init).then((res) => res.json()),
       }}
     >
-      <UserProvider>
-        <CartProvider>
+      <CartProvider>
+        <UserProvider>
           <UIProvider>
             <ThemeProvider theme={lightTheme}>
               <CssBaseline />
@@ -24,8 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
             </ThemeProvider>
           </UIProvider>
-        </CartProvider>
-      </UserProvider>
+        </UserProvider>
+      </CartProvider>
     </SWRConfig>
   );
 }

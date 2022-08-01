@@ -26,7 +26,6 @@ import {
 } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
 import { UIContext } from "../../context";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
 import SearchInput from "../SearchInput";
 import useUser from "../../context/Auth/useUser";
