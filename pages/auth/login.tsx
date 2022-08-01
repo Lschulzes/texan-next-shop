@@ -32,8 +32,7 @@ const LoginPage = () => {
     try {
       await loginUser(formData);
 
-      const { previousPath = "/" } = router.query;
-      router.replace(`${previousPath}`);
+      router.back();
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }
