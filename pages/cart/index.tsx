@@ -10,14 +10,30 @@ import {
   Typography,
 } from "@mui/material";
 import NextLink from "next/link";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import CartList from "../../components/Cart/CartList";
 import OrderSummary from "../../components/Cart/OrderSummary";
 import Layout from "../../components/Layout";
+import { useCart } from "../../context";
 
 const CartPage = () => {
+  const { quantity, isLoading } = useCart();
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && quantity === 0) push("/cart/empty");
+  }, [isLoading, quantity, push]);
+
+  if (isLoading || quantity === 0) return <></>;
+
   return (
-    <Layout title="Cart" description="No products in the cart">
+    <Layout
+      title="Cart"
+      description={`${
+        quantity === 0 ? "No products" : quantity
+      } item(s) in the cart`}
+    >
       <Typography variant="h1" component="h1">
         Cart
       </Typography>

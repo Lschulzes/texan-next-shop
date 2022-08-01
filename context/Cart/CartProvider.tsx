@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useReducer } from "react";
+import { ReactNode, useEffect, useReducer, useState } from "react";
 import { CartContext, CartReducer } from ".";
 import { ICartProduct } from "../../interfaces/cart";
 import Cookie from "js-cookie";
@@ -9,6 +9,7 @@ export interface CartState {
   total: number;
   subTotal: number;
   discount: number;
+  isLoading: boolean;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -17,6 +18,7 @@ const CART_INITIAL_STATE: CartState = {
   total: 0,
   discount: 0,
   subTotal: 0,
+  isLoading: true,
 };
 
 type CartProviderProps = {

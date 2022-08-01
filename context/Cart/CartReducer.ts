@@ -34,6 +34,7 @@ export const CartReducer = (
     case "Cart - Load from cookies | storage":
       return {
         ...state,
+        isLoading: false,
         products: action.payload,
       };
 
