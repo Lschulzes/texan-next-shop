@@ -28,11 +28,13 @@ const LoginPage = () => {
   const { loginUser } = useUser();
   const router = useRouter();
 
+  const { previousPath = "/" } = router.query;
+
   const onLoginUser = async (formData: FormInput) => {
     try {
       await loginUser(formData);
 
-      router.back();
+      router.replace(`${previousPath}`);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }
@@ -113,7 +115,10 @@ const LoginPage = () => {
             </Grid>
 
             <Grid item xs={12} display="flex" justifyContent="end">
-              <NextLink href="/auth/register" passHref>
+              <NextLink
+                href={`/auth/register?previousPath=${previousPath}`}
+                passHref
+              >
                 <Link underline="always">{"Don't have an account?"}</Link>
               </NextLink>
             </Grid>

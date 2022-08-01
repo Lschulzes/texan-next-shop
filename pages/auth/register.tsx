@@ -15,6 +15,7 @@ import { texanAPI } from "../../api";
 import { useEffect, useState } from "react";
 import { ErrorOutline } from "@mui/icons-material";
 import useUser from "../../context/Auth/useUser";
+import { useRouter } from "next/router";
 
 export type RegisterFormInput = {
   name: string;
@@ -23,20 +24,24 @@ export type RegisterFormInput = {
 };
 
 const RegisterPage = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     handleSubmit,
     register,
     watch,
     formState: { errors },
   } = useForm<RegisterFormInput>();
-
   const { registerUser } = useUser();
+  const router = useRouter();
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const { previousPath = "/" } = router.query;
 
   const onRegisterUser = async (data: RegisterFormInput) => {
     try {
       await registerUser(data);
+
+      router.replace(`${previousPath}`);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }
@@ -133,7 +138,10 @@ const RegisterPage = () => {
             </Grid>
 
             <Grid item xs={12} display="flex" justifyContent="end">
-              <NextLink href="/auth/login" passHref>
+              <NextLink
+                href={`/auth/login?previousPath=${previousPath}`}
+                passHref
+              >
                 <Link underline="always">Already have an account?</Link>
               </NextLink>
             </Grid>
