@@ -59,8 +59,6 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
     setIsLoading(false);
     if (!data.user) return;
 
-    Cookies.set("token", data.token);
-
     setUser(data.user);
     setIsAuthenticated(true);
   }, []);
@@ -71,13 +69,12 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
     setIsLoading(false);
     if (!data.user) return;
 
-    Cookies.set("token", data.token);
-
     setUser(data.user);
     setIsAuthenticated(true);
   }, []);
 
   const logoutUser = useCallback(() => {
+    Cookies.set("token", void 0);
     setUser(null);
     setIsAuthenticated(false);
   }, []);

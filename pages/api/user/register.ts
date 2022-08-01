@@ -50,6 +50,8 @@ const registerUser = async (
 
     const token = signToken(_id, email);
 
+    res.setHeader("set-cookie", `token=${token}; path=/; samesite=lax;`);
+
     return res.status(200).json({
       message: "User registered",
       token,

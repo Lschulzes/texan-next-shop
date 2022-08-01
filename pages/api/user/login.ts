@@ -41,10 +41,7 @@ const loginUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const token = signToken(_id, email);
 
-  res.setHeader(
-    "set-cookie",
-    `token=${token}; path=/; samesite=lax; httponly;`
-  );
+  res.setHeader("set-cookie", `token=${token}; path=/; samesite=lax;`);
 
   return res.status(200).json({
     message: "User logged in",
