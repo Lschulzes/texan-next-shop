@@ -15,14 +15,14 @@ import {
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
-import { CartContext, UIContext } from "../../context";
+import { CartContext, UIContext, useCart } from "../../context";
 import SearchInput from "../SearchInput";
 
 const Navbar = () => {
   const { asPath } = useRouter();
 
   const { toggleSideMenu } = useContext(UIContext);
-  const { quantity } = useContext(CartContext);
+  const { quantity } = useCart();
   const [isSearchHidden, setIsSearchHidden] = useState(true);
 
   return (

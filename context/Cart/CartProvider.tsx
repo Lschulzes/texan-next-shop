@@ -23,12 +23,14 @@ type CartProviderProps = {
   children: ReactNode;
 };
 
+export const CART_KEY = "texan_shop_cart";
+
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [state, dispatch] = useReducer(CartReducer, CART_INITIAL_STATE);
 
   useEffect(() => {
     try {
-      const cookieProductsJSON = Cookie.get("texan_shop_cart");
+      const cookieProductsJSON = Cookie.get(CART_KEY);
       if (cookieProductsJSON) {
         const cookieProducts = JSON.parse(cookieProductsJSON);
 
@@ -48,7 +50,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   useEffect(() => {
     dispatch({ type: "Cart - Update Stats" });
 
-    Cookie.set("texan_shop_cart", JSON.stringify(state.products));
+    Cookie.set(CART_KEY, JSON.stringify(state.products));
   }, [state.products]);
 
   const addProduct = (product: ICartProduct) => {
@@ -69,6 +71,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     });
   };
 
+  const removeAllProducts = () => {
+    dispatch({ type: "Cart - Remove All Products" });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -78,6 +84,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         addProduct,
         updateProductQuantity,
         removeProduct,
+        removeAllProducts,
       }}
     >
       {children}

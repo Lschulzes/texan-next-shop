@@ -1,5 +1,6 @@
+import Cookies from "js-cookie";
 import { ICartProduct } from "../../interfaces/cart";
-import { CartState } from "./CartProvider";
+import { CartState, CART_KEY } from "./CartProvider";
 
 type CartActionType =
   | { type: "Cart - Add Product"; payload: ICartProduct }
@@ -17,6 +18,9 @@ type CartActionType =
     }
   | {
       type: "Cart - Update Stats";
+    }
+  | {
+      type: "Cart - Remove All Products";
     };
 
 export const CartReducer = (
@@ -38,6 +42,9 @@ export const CartReducer = (
 
     case "Cart - Remove Product":
       return removeProduct(state, action.payload);
+
+    case "Cart - Remove All Products":
+      return removeAllProducts(state);
 
     case "Cart - Update Stats":
       return updateStats(state);
@@ -66,6 +73,11 @@ const removeProduct = (state: CartState, payload: ICartProduct): CartState => {
   );
 
   return { ...state, products };
+};
+
+const removeAllProducts = (state: CartState): CartState => {
+  Cookies.remove(CART_KEY);
+  return { ...state, products: [] };
 };
 
 const updateProductQuantity = (

@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { ICartProduct } from "../../interfaces/cart";
 
 interface ContextProps {
@@ -12,6 +12,9 @@ interface ContextProps {
   addProduct: (product: ICartProduct) => void;
   updateProductQuantity: (product: ICartProduct) => void;
   removeProduct: (product: ICartProduct) => void;
+  removeAllProducts: () => void;
 }
 
 export const CartContext = createContext({} as ContextProps);
+
+export const useCart = () => useContext(CartContext);

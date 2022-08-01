@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import React, { useContext } from "react";
-import { CartContext } from "../../../context";
+import { CartContext, useCart } from "../../../context";
 import { initialData } from "../../../database/seed-data";
 import { ICartProduct } from "../../../interfaces";
 import ItemCounter from "../../ItemCounter";
@@ -19,8 +19,7 @@ type CartListProps = {
 };
 
 const CartList = ({ editable = false }: CartListProps) => {
-  const { products, updateProductQuantity, removeProduct } =
-    useContext(CartContext);
+  const { products, updateProductQuantity, removeProduct } = useCart();
 
   const onProductQuantityChange = (count: number, product: ICartProduct) => {
     product.quantity = count;

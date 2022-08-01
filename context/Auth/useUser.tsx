@@ -12,6 +12,7 @@ import { texanAPI } from "../../api";
 import { IUser } from "../../interfaces";
 import { FormInput } from "../../pages/auth/login";
 import { RegisterFormInput } from "../../pages/auth/register";
+import { CartContext, CART_KEY, useCart } from "../Cart";
 import { UserContextState } from "./useUser.utils";
 
 const UserContext = createContext<UserContextState>({
@@ -28,6 +29,9 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { removeAllProducts } = useCart();
+
   const { pathname, push } = useRouter();
 
   useEffect(() => {
@@ -75,9 +79,10 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
 
   const logoutUser = useCallback(() => {
     Cookies.remove("token");
+    removeAllProducts();
     setUser(null);
     setIsAuthenticated(false);
-  }, []);
+  }, [removeAllProducts]);
 
   const state: UserContextState = useMemo(
     () => ({

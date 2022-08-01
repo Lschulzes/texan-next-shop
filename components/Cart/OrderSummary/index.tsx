@@ -1,9 +1,9 @@
 import { Divider, Grid, Typography } from "@mui/material";
 import React, { useContext } from "react";
-import { CartContext } from "../../../context";
+import { CartContext, useCart } from "../../../context";
 
 const OrderSummary = () => {
-  const { discount, subTotal, quantity, total } = useContext(CartContext);
+  const { discount, subTotal, quantity, total } = useCart();
 
   return (
     <Grid container>

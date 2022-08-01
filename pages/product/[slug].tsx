@@ -7,7 +7,7 @@ import ItemCounter from "../../components/ItemCounter";
 import Layout from "../../components/Layout";
 import SizeSelector from "../../components/products/SizeSelector";
 import Slideshow from "../../components/Slideshow";
-import { CartContext } from "../../context";
+import { CartContext, useCart } from "../../context";
 import {
   getAllProductsSlugs,
   getProductBySlug,
@@ -25,7 +25,7 @@ const Slug: FC<PageProps> = ({ product }) => {
     mapProductToCartProduct(product)
   );
 
-  const { addProduct, products } = useContext(CartContext);
+  const { addProduct, products } = useCart();
 
   const handleChangeSize = (size: ISize) => {
     setProductForCart((product) => ({ ...product, size }));
