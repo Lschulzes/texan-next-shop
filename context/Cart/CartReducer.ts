@@ -76,7 +76,6 @@ const removeProduct = (state: CartState, payload: ICartProduct): CartState => {
 };
 
 const removeAllProducts = (state: CartState): CartState => {
-  Cookies.remove(CART_KEY);
   return { ...state, products: [] };
 };
 

@@ -9,6 +9,7 @@ import { texanAPI } from "../../api";
 import { ErrorOutline } from "@mui/icons-material";
 import useUser from "../../context/Auth/useUser";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 export type FormInput = {
   email: string;
@@ -16,19 +17,23 @@ export type FormInput = {
 };
 
 const LoginPage = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     handleSubmit,
     register,
     watch,
     formState: { errors },
   } = useForm<FormInput>();
-
-  const [errorMessage, setErrorMessage] = useState("");
   const { loginUser } = useUser();
+  const router = useRouter();
 
   const onLoginUser = async (formData: FormInput) => {
     try {
       await loginUser(formData);
+
+      const { previousPath = "/" } = router.query;
+      router.replace(`${previousPath}`);
     } catch (error) {
       setErrorMessage((error as any).response.data.message);
     }
