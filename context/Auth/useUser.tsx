@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import React, {
   createContext,
   useCallback,
@@ -27,11 +28,15 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { pathname, push } = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated && pathname.includes("auth")) push("/");
+  }, [pathname, push, isAuthenticated]);
 
   const token = Cookies.get("token");
 
   useEffect(() => {
-    console.log({ token });
     if (!!user || isAuthenticated || !token) return;
     const controller = new AbortController();
 
