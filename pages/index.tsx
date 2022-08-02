@@ -1,33 +1,18 @@
-import {
-  Card,
-  CardActionArea,
-  CardMedia,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import useSWR from "swr";
-import FullScreenLoading from "../components/FullScreenLoading";
-import Layout from "../components/Layout";
-import ProductList from "../components/products/ProductList";
-import { initialData } from "../database/seed-data";
-import { useProducts } from "../hooks";
-import { IProduct } from "../interfaces";
+import { Typography } from '@mui/material';
+import type { NextPage } from 'next';
+import FullScreenLoading from '../components/FullScreenLoading';
+import Layout from '../components/Layout';
+import ProductList from '../components/products/ProductList';
+import { useProducts } from '../hooks';
+import { IProduct } from '../interfaces';
 
 const Home: NextPage = () => {
-  const { data, error, isLoading } = useProducts("/products");
+  const { data: products, error, isLoading } = useProducts('/products');
 
   if (error || isLoading) return <FullScreenLoading />;
 
   return (
-    <Layout
-      title="Texan-Shop - Home"
-      description="Find the best texan products here"
-    >
+    <Layout title="Texan-Shop - Home" description="Find the best texan products here">
       <Typography variant="h1" component="h1">
         Shop
       </Typography>
@@ -35,7 +20,7 @@ const Home: NextPage = () => {
         All Products
       </Typography>
 
-      <ProductList products={data.data as Array<IProduct>} />
+      <ProductList products={products.data as Array<IProduct>} />
     </Layout>
   );
 };
