@@ -12,6 +12,7 @@ import { GetServerSideProps } from "next";
 import React from "react";
 import Layout from "../../components/Layout";
 import { getIdFromToken } from "../../utils";
+import { COUNTRIES } from "../../utils/countries";
 
 const AddressPage = () => {
   return (
@@ -39,10 +40,16 @@ const AddressPage = () => {
 
         <Grid item xs={12} sm={6}>
           <FormControl fullWidth>
-            <Select variant="filled" label="Country" value={1}>
-              <MenuItem value={1}> USA</MenuItem>
-              <MenuItem value={2}> Canada</MenuItem>
-              <MenuItem value={3}> México</MenuItem>
+            <Select
+              variant="filled"
+              label="Country"
+              defaultValue={COUNTRIES[0].code}
+            >
+              {COUNTRIES.map(({ code, name }, i) => (
+                <MenuItem key={code} value={code}>
+                  {name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>

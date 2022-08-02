@@ -21,8 +21,7 @@ import { IProduct } from "../interfaces";
 const Home: NextPage = () => {
   const { data, error, isLoading } = useProducts("/products");
 
-  if (error) return <div>Error</div>;
-  if (isLoading) return <FullScreenLoading />;
+  if (error || isLoading) return <FullScreenLoading />;
 
   return (
     <Layout
