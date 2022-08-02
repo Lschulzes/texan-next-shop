@@ -14,9 +14,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if (process.env.NODE_ENV !== "development") {
-    return res.status(401).json({ message: "Endpoint Unauthorized" });
-  }
+  // if (process.env.NODE_ENV !== "development") {
+  //   return res.status(401).json({ message: "Endpoint Unauthorized" });
+  // }
 
   switch (req.method) {
     case "POST":
