@@ -32,17 +32,6 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
 
   const { removeAllProducts } = useCart();
 
-  const { pathname, push, query } = useRouter();
-
-  useEffect(() => {
-    if (
-      isAuthenticated &&
-      !query?.previousPath?.length &&
-      pathname.includes("auth")
-    )
-      push("/");
-  }, [pathname, push, isAuthenticated, query]);
-
   const token = Cookies.get("token");
 
   useEffect(() => {

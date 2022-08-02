@@ -2,27 +2,45 @@ import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 
 export async function middleware(req: NextRequest) {
-  if (req.nextUrl.pathname.startsWith("/checkout")) {
-    const token = req.cookies.get("token");
+  const { pathname } = req.nextUrl;
+  const token = req.cookies.get("token") || "";
 
-    try {
-      await jose.jwtVerify(
-        token || "",
-        new TextEncoder().encode(process.env.JWT_SECRET_SEED || "")
-      );
+  if (pathname.startsWith("/checkout")) {
+    const isTokenValid = await verifyTokenValid(token);
 
-      return NextResponse.next();
-    } catch (error) {
-      console.error(`JWT Invalid or not signed in`, { error });
-      const { protocol, host, pathname } = req.nextUrl;
+    if (isTokenValid) return NextResponse.next();
 
-      return NextResponse.redirect(
-        `${protocol}//${host}/auth/login?previousPath=${pathname}`
-      );
+    const { protocol, host, pathname } = req.nextUrl;
+
+    return NextResponse.redirect(
+      `${protocol}//${host}/auth/login?previousPath=${pathname}`
+    );
+  }
+
+  if (pathname.startsWith("/auth")) {
+    const isTokenValid = await verifyTokenValid(token);
+
+    if (isTokenValid) {
+      const { protocol, host } = req.nextUrl;
+      return NextResponse.redirect(`${protocol}//${host}/ `);
     }
+
+    return NextResponse.next();
   }
 }
 
+const verifyTokenValid = async (token: string) => {
+  try {
+    await jose.jwtVerify(
+      token || "",
+      new TextEncoder().encode(process.env.JWT_SECRET_SEED || "")
+    );
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 export const config = {
-  matcher: ["/checkout/:path*"],
+  matcher: ["/checkout/:path*", "/auth/:path*"],
 };
