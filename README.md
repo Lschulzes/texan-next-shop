@@ -10,6 +10,8 @@ Rename  __.env.example__ as __.env__
 * MongoDB URL Local:
 ```
 MONGO_URL=mongodb://localhost:27017/texandb
+JWT_SECRET_SEED=any_string
+Create an Github app OAUTH for GITHUB_ID && GITHUB_SECRET
 ```
 
 * Nextjs Common startup
