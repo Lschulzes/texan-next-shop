@@ -1,4 +1,10 @@
-export const COUNTRIES = [
+export enum CountryCodes {
+  USA = "USA",
+  CND = "CND",
+  MEX = "MEX",
+}
+
+export const COUNTRIES: Array<{ name: string; code: `${CountryCodes}` }> = [
   {
     name: "United States",
     code: "USA",
