@@ -6,8 +6,9 @@ import { SWRConfig } from "swr";
 import { UIProvider } from "../context";
 import { CartProvider } from "../context/Cart";
 import { UserProvider } from "../context/Auth";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SWRConfig
       value={{
@@ -15,17 +16,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           fetch(input, init).then((res) => res.json()),
       }}
     >
-      <CartProvider>
-        <UserProvider>
-          <UIProvider>
-            <ThemeProvider theme={lightTheme}>
-              <CssBaseline />
+      <SessionProvider session={session}>
+        <CartProvider>
+          <UserProvider>
+            <UIProvider>
+              <ThemeProvider theme={lightTheme}>
+                <CssBaseline />
 
-              <Component {...pageProps} />
-            </ThemeProvider>
-          </UIProvider>
-        </UserProvider>
-      </CartProvider>
+                <Component {...pageProps} />
+              </ThemeProvider>
+            </UIProvider>
+          </UserProvider>
+        </CartProvider>
+      </SessionProvider>
     </SWRConfig>
   );
 }
