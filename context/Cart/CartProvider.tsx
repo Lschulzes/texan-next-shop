@@ -4,6 +4,7 @@ import { ICartProduct } from "../../interfaces/cart";
 import Cookie from "js-cookie";
 import { getAddressDataFromCookies } from "../../pages/checkout/address";
 import { BillingAddress } from "./CartContext";
+import Cookies from "js-cookie";
 
 export interface CartState {
   products: Array<ICartProduct>;
@@ -81,6 +82,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   };
 
   const updateBillingAddress = (billingAddress: BillingAddress) => {
+    Cookies.set("address_data", JSON.stringify(billingAddress));
     dispatch({
       type: "Cart - update Billing Address",
       payload: billingAddress,
@@ -104,6 +106,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateProductQuantity,
         removeProduct,
         removeAllProducts,
+        updateBillingAddress,
       }}
     >
       {children}

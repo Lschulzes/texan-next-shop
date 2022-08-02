@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../../components/Layout";
-import { BillingAddress } from "../../context";
+import { BillingAddress, useCart } from "../../context";
 import { useIsHydrated } from "../../hooks/useIsHydrated";
 import { COUNTRIES, CountryCodes } from "../../utils";
 
@@ -45,9 +45,11 @@ const AddressPage = () => {
 
   const { push } = useRouter();
   const { isHydrated } = useIsHydrated();
+  const { updateBillingAddress } = useCart();
 
   const onSubmit = async (formData: BillingAddress) => {
-    Cookies.set("address_data", JSON.stringify(formData));
+    updateBillingAddress(formData);
+
     push("/checkout/summary");
   };
 
