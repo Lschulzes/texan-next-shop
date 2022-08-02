@@ -61,22 +61,4 @@ const AddressPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const { token = "" } = req.cookies;
-  let userId = "";
-
-  try {
-    userId = await getIdFromToken(token);
-  } catch (error) {
-    return {
-      redirect: {
-        destination: "/auth/login?previousPath=/checkout/address",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: {} };
-};
-
 export default AddressPage;

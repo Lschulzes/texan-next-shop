@@ -26,6 +26,8 @@ const CartList = ({ editable = false }: CartListProps) => {
     updateProductQuantity(product);
   };
 
+  if (!products) return <></>;
+
   return (
     <>
       {products.map((product) => {
