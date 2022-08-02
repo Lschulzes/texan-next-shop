@@ -1,7 +1,9 @@
-import { ReactNode, useEffect, useReducer, useState } from "react";
+import { ReactNode, useEffect, useReducer } from "react";
 import { CartContext, CartReducer } from ".";
 import { ICartProduct } from "../../interfaces/cart";
 import Cookie from "js-cookie";
+import { getAddressDataFromCookies } from "../../pages/checkout/address";
+import { BillingAddress } from "./CartContext";
 
 export interface CartState {
   products: Array<ICartProduct>;
@@ -10,6 +12,7 @@ export interface CartState {
   subTotal: number;
   discount: number;
   isLoading: boolean;
+  billingAddress?: BillingAddress;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -76,6 +79,20 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const removeAllProducts = () => {
     dispatch({ type: "Cart - Remove All Products" });
   };
+
+  const updateBillingAddress = (billingAddress: BillingAddress) => {
+    dispatch({
+      type: "Cart - update Billing Address",
+      payload: billingAddress,
+    });
+  };
+
+  useEffect(() => {
+    const billingAddress = getAddressDataFromCookies();
+    if (!billingAddress.name.length) return;
+
+    updateBillingAddress(billingAddress);
+  }, []);
 
   return (
     <CartContext.Provider

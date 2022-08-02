@@ -18,9 +18,15 @@ import NextLink from "next/link";
 import React from "react";
 import CartList from "../../components/Cart/CartList";
 import OrderSummary from "../../components/Cart/OrderSummary";
+import FullScreenLoading from "../../components/FullScreenLoading";
 import Layout from "../../components/Layout";
+import { useCart } from "../../context";
 
 const SummaryPage = () => {
+  const { billingAddress } = useCart();
+
+  if (!billingAddress) return <FullScreenLoading />;
+
   return (
     <Layout title="Summary of the order" description="Summary of the order">
       <Typography variant="h1" component="h1">
@@ -51,13 +57,15 @@ const SummaryPage = () => {
                 </NextLink>
               </Box>
 
-              <Typography>Lucas Silva</Typography>
+              <Typography>
+                {billingAddress.name} {billingAddress.lastName}
+              </Typography>
 
-              <Typography>321 Main St., NY</Typography>
+              <Typography>{billingAddress.address}</Typography>
 
-              <Typography>USA</Typography>
+              <Typography>{billingAddress.country}</Typography>
 
-              <Typography>(589) 9855-328</Typography>
+              <Typography>{billingAddress.phoneNumber}</Typography>
 
               <Divider sx={{ my: 1 }} />
 

@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { ICartProduct } from "../../interfaces/cart";
+import { BillingAddress } from "./CartContext";
 import { CartState, CART_KEY } from "./CartProvider";
 
 type CartActionType =
@@ -21,6 +22,10 @@ type CartActionType =
     }
   | {
       type: "Cart - Remove All Products";
+    }
+  | {
+      type: "Cart - update Billing Address";
+      payload: BillingAddress;
     };
 
 export const CartReducer = (
@@ -50,9 +55,19 @@ export const CartReducer = (
     case "Cart - Update Stats":
       return updateStats(state);
 
+    case "Cart - update Billing Address":
+      return updateBillingAddress(state, action.payload);
+
     default:
       return state;
   }
+};
+
+const updateBillingAddress = (
+  state: CartState,
+  billingAddress: BillingAddress
+): CartState => {
+  return { ...state, billingAddress };
 };
 
 const updateStats = (state: CartState): CartState => {

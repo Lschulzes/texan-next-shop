@@ -11,24 +11,15 @@ import {
   Typography,
 } from "@mui/material";
 import Cookies from "js-cookie";
-import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../../components/Layout";
+import { BillingAddress } from "../../context";
 import { useIsHydrated } from "../../hooks/useIsHydrated";
 import { COUNTRIES, CountryCodes } from "../../utils";
 
-type InputAddressFormData = {
-  name: string;
-  lastName: string;
-  address: string;
-  ZIP: string;
-  country: typeof COUNTRIES[0]["code"];
-  phoneNumber: string;
-};
-
-const getAddressDataFromCookies = (): InputAddressFormData => {
+export const getAddressDataFromCookies = (): BillingAddress => {
   try {
     return JSON.parse(Cookies.get("address_data") || "");
   } catch (error) {
@@ -48,14 +39,14 @@ const AddressPage = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<InputAddressFormData>({
+  } = useForm<BillingAddress>({
     defaultValues: { ...getAddressDataFromCookies() },
   });
 
   const { push } = useRouter();
   const { isHydrated } = useIsHydrated();
 
-  const onSubmit = async (formData: InputAddressFormData) => {
+  const onSubmit = async (formData: BillingAddress) => {
     Cookies.set("address_data", JSON.stringify(formData));
     push("/checkout/summary");
   };
