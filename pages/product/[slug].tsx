@@ -21,18 +21,20 @@ type PageProps = {
 const Slug: FC<PageProps> = ({ product }) => {
   const router = useRouter();
 
-  const [productForCart, setProductForCart] = useState<ICartProduct>(
+  const [productForCart, setProductForCart] = useState<ICartProduct | null>(
     mapProductToCartProduct(product)
   );
 
-  const { addProduct, products } = useCart();
+  const { addProduct } = useCart();
+
+  if (!productForCart) return <></>;
 
   const handleChangeSize = (size: ISize) => {
-    setProductForCart((product) => ({ ...product, size }));
+    setProductForCart((product) => product && { ...product, size });
   };
 
   const handleChangeQuantity = (quantity: number) => {
-    setProductForCart((product) => ({ ...product, quantity }));
+    setProductForCart((product) => product && { ...product, quantity });
   };
 
   const handleAddProductToCart = () => {
@@ -126,14 +128,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export default Slug;
 
 /************************ */
-const mapProductToCartProduct = (product: IProduct) => ({
-  _id: product._id,
-  gender: product.gender,
-  image: product.images[0],
-  price: product.price,
-  slug: product.slug,
-  title: product.title,
-  inStock: product.inStock,
-  quantity: 1,
-  size: undefined,
-});
+const mapProductToCartProduct = (product: IProduct) => {
+  if (!product) return null;
+
+  return {
+    _id: product._id,
+    gender: product.gender,
+    image: product.images[0],
+    price: product.price,
+    slug: product.slug,
+    title: product.title,
+    inStock: product.inStock,
+    quantity: 1,
+    size: undefined,
+  };
+};
