@@ -2,12 +2,14 @@ import { ErrorOutline } from '@mui/icons-material';
 import { Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import validator from 'validator';
 import AuthLayout from '../../components/AuthLayout';
+import useUser from '../../context/Auth/useUser';
 
 export type FormInput = {
   email: string;
@@ -18,6 +20,8 @@ export type LoginRegisterError = { response: { data: { message: string } } };
 
 const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
+
+  const { providers } = useUser();
 
   const {
     handleSubmit,
@@ -106,14 +110,38 @@ const LoginPage = () => {
               </Button>
             </Grid>
 
+            <Grid item xs={12} display="flex" flexDirection="column" justifyContent="end">
+              <Divider sx={{ width: '100%', mb: 2 }} />
+
+              {providers.map(
+                ({ id, name }) =>
+                  id !== 'credentials' && (
+                    <Button
+                      onClick={() => signIn(id)}
+                      key={id}
+                      variant="outlined"
+                      fullWidth
+                      color="primary"
+                      sx={{ mb: 1 }}
+                    >
+                      <Grid display="flex" gap="0.5rem" alignItems="center" sx={{ pr: '1.75rem' }}>
+                        <Image
+                          src={`/assets/${id}_icon.png`}
+                          width={30}
+                          height={30}
+                          alt={`${name} icon                  `}
+                        />
+                        {name}
+                      </Grid>
+                    </Button>
+                  ),
+              )}
+            </Grid>
+
             <Grid item xs={12} display="flex" justifyContent="end">
               <NextLink href={`/auth/register?previousPath=${previousPath}`} passHref>
                 <Link underline="always">{"Don't have an account?"}</Link>
               </NextLink>
-            </Grid>
-
-            <Grid item xs={12} display="flex" justifyContent="end">
-              <Divider sx={{ width: '100%', mb: 2 }} />
             </Grid>
           </Grid>
         </Box>
