@@ -30,6 +30,10 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_SECRET || '',
     }),
   ],
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register',
+  },
   callbacks: {
     async jwt({ token, account, user }) {
       if (!account) return token;

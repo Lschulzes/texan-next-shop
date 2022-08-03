@@ -15,8 +15,9 @@ export async function middleware(req: NextRequest) {
 
   if (pathname.startsWith('/auth')) {
     if (token) {
-      const { protocol, host } = req.nextUrl;
-      return NextResponse.redirect(`${protocol}//${host}/ `);
+      const { protocol, host, search } = req.nextUrl;
+      const previousPath = search.split('previousPath=')[1]?.split('%2F').join('/') || '';
+      return NextResponse.redirect(`${protocol}//${host}${previousPath}`);
     }
 
     return NextResponse.next();
