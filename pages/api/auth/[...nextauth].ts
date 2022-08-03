@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
+import { checkUserEmailPassword } from './../../../database/dbUsers';
 
 export default NextAuth({
   providers: [
@@ -13,7 +14,8 @@ export default NextAuth({
       async authorize(credentials) {
         if (!credentials) return null;
         const { email, password } = credentials;
-        return null;
+
+        return await checkUserEmailPassword(email, password);
       },
     }),
 
