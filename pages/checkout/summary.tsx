@@ -1,26 +1,10 @@
-import { RemoveShoppingCartOutlined } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  FormControl,
-  Grid,
-  InputLabel,
-  Link,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import NextLink from "next/link";
-import React from "react";
-import CartList from "../../components/Cart/CartList";
-import OrderSummary from "../../components/Cart/OrderSummary";
-import FullScreenLoading from "../../components/FullScreenLoading";
-import Layout from "../../components/Layout";
-import { useCart } from "../../context";
+import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material';
+import NextLink from 'next/link';
+import CartList from '../../components/Cart/CartList';
+import OrderSummary from '../../components/Cart/OrderSummary';
+import FullScreenLoading from '../../components/FullScreenLoading';
+import Layout from '../../components/Layout';
+import { useCart } from '../../context';
 
 const SummaryPage = () => {
   const { billingAddress } = useCart();
@@ -45,11 +29,7 @@ const SummaryPage = () => {
 
               <Divider sx={{ my: 1 }} />
 
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="subtitle1">Delivery Address</Typography>
 
                 <NextLink href="/checkout/address" passHref>

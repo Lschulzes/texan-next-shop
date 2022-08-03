@@ -1,39 +1,23 @@
-import { RemoveShoppingCartOutlined } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Link,
-  Typography,
-} from "@mui/material";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import CartList from "../../components/Cart/CartList";
-import OrderSummary from "../../components/Cart/OrderSummary";
-import Layout from "../../components/Layout";
-import { useCart } from "../../context";
+import { Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import CartList from '../../components/Cart/CartList';
+import OrderSummary from '../../components/Cart/OrderSummary';
+import Layout from '../../components/Layout';
+import { useCart } from '../../context';
 
 const CartPage = () => {
   const { quantity, isLoading } = useCart();
   const { push } = useRouter();
 
   useEffect(() => {
-    if (!isLoading && quantity === 0) push("/cart/empty");
+    if (!isLoading && quantity === 0) push('/cart/empty');
   }, [isLoading, quantity, push]);
 
   if (isLoading || quantity === 0) return <></>;
 
   return (
-    <Layout
-      title="Cart"
-      description={`${
-        quantity === 0 ? "No products" : quantity
-      } item(s) in the cart`}
-    >
+    <Layout title="Cart" description={`${quantity === 0 ? 'No products' : quantity} item(s) in the cart`}>
       <Typography variant="h1" component="h1">
         Cart
       </Typography>
@@ -53,12 +37,7 @@ const CartPage = () => {
               <OrderSummary />
 
               <Box mt={3}>
-                <Button
-                  color="secondary"
-                  className="circular-btn"
-                  fullWidth
-                  href="/checkout/address"
-                >
+                <Button color="secondary" className="circular-btn" fullWidth href="/checkout/address">
                   Checkout
                 </Button>
               </Box>

@@ -9,27 +9,26 @@ import {
   Skeleton,
   TextField,
   Typography,
-} from "@mui/material";
-import Cookies from "js-cookie";
-import { useRouter } from "next/router";
-import React from "react";
-import { useForm } from "react-hook-form";
-import Layout from "../../components/Layout";
-import { BillingAddress, useCart } from "../../context";
-import { useIsHydrated } from "../../hooks/useIsHydrated";
-import { COUNTRIES, CountryCodes } from "../../utils";
+} from '@mui/material';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import Layout from '../../components/Layout';
+import { BillingAddress, useCart } from '../../context';
+import { useIsHydrated } from '../../hooks/useIsHydrated';
+import { COUNTRIES, CountryCodes } from '../../utils';
 
 export const getAddressDataFromCookies = (): BillingAddress => {
   try {
-    return JSON.parse(Cookies.get("address_data") || "");
+    return JSON.parse(Cookies.get('address_data') || '');
   } catch (error) {
     return {
-      name: "",
-      lastName: "",
-      address: "",
-      ZIP: "",
-      country: "USA",
-      phoneNumber: "",
+      name: '',
+      lastName: '',
+      address: '',
+      ZIP: '',
+      country: 'USA',
+      phoneNumber: '',
     };
   }
 };
@@ -50,7 +49,7 @@ const AddressPage = () => {
   const onSubmit = async (formData: BillingAddress) => {
     updateBillingAddress(formData);
 
-    push("/checkout/summary");
+    push('/checkout/summary');
   };
 
   return (
@@ -68,8 +67,8 @@ const AddressPage = () => {
               fullWidth
               error={!!errors.name}
               helperText={errors.name?.message}
-              {...register("name", {
-                required: "This field is required",
+              {...register('name', {
+                required: 'This field is required',
                 minLength: 4,
                 maxLength: 16,
               })}
@@ -83,8 +82,8 @@ const AddressPage = () => {
               fullWidth
               error={!!errors.lastName}
               helperText={errors.lastName?.message}
-              {...register("lastName", {
-                required: "This field is required",
+              {...register('lastName', {
+                required: 'This field is required',
                 minLength: 4,
                 maxLength: 20,
               })}
@@ -98,8 +97,8 @@ const AddressPage = () => {
               fullWidth
               error={!!errors.address}
               helperText={errors.address?.message}
-              {...register("address", {
-                required: "This field is required",
+              {...register('address', {
+                required: 'This field is required',
               })}
             />
           </Grid>
@@ -111,8 +110,8 @@ const AddressPage = () => {
               fullWidth
               error={!!errors.ZIP}
               helperText={errors.ZIP?.message}
-              {...register("ZIP", {
-                required: "This field is required",
+              {...register('ZIP', {
+                required: 'This field is required',
                 minLength: 7,
                 maxLength: 12,
               })}
@@ -128,16 +127,14 @@ const AddressPage = () => {
                   error={!!errors.country}
                   variant="filled"
                   label="Country"
-                  {...register("country", {
-                    required: "This field is required",
+                  {...register('country', {
+                    required: 'This field is required',
                     validate: (val) =>
                       Object.keys(CountryCodes).includes(val) ||
-                      `Only ${Object.values(
-                        CountryCodes
-                      )} are valid countries.`,
+                      `Only ${Object.values(CountryCodes)} are valid countries.`,
                   })}
                 >
-                  {COUNTRIES.map(({ code, name }, i) => (
+                  {COUNTRIES.map(({ code, name }) => (
                     <MenuItem key={code} value={code}>
                       {name}
                     </MenuItem>
@@ -145,10 +142,7 @@ const AddressPage = () => {
                 </Select>
               </FormControl>
             ) : (
-              <Skeleton
-                height="5.8rem"
-                sx={{ mt: "-1.3rem", borderBottom: "3px solid gray" }}
-              />
+              <Skeleton height="5.8rem" sx={{ mt: '-1.3rem', borderBottom: '3px solid gray' }} />
             )}
           </Grid>
 
@@ -159,8 +153,8 @@ const AddressPage = () => {
               fullWidth
               error={!!errors.phoneNumber}
               helperText={errors.phoneNumber?.message}
-              {...register("phoneNumber", {
-                required: "This field is required",
+              {...register('phoneNumber', {
+                required: 'This field is required',
                 minLength: 8,
                 maxLength: 14,
               })}
@@ -168,12 +162,7 @@ const AddressPage = () => {
           </Grid>
 
           <Box display="flex" mt={4} justifyContent="center" width="100%">
-            <Button
-              type="submit"
-              color="secondary"
-              className="circular-btn"
-              size="large"
-            >
+            <Button type="submit" color="secondary" className="circular-btn" size="large">
               Review Order
             </Button>
           </Box>

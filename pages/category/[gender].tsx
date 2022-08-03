@@ -1,11 +1,11 @@
-import { Typography } from "@mui/material";
-import { NextPage, NextPageContext } from "next";
-import { useRouter } from "next/router";
-import FullScreenLoading from "../../components/FullScreenLoading";
-import Layout from "../../components/Layout";
-import ProductList from "../../components/products/ProductList";
-import { useProducts } from "../../hooks";
-import { IProduct } from "../../interfaces";
+import { Typography } from '@mui/material';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import FullScreenLoading from '../../components/FullScreenLoading';
+import Layout from '../../components/Layout';
+import ProductList from '../../components/products/ProductList';
+import { useProducts } from '../../hooks';
+import { IProduct } from '../../interfaces';
 
 const CategoryPage: NextPage = () => {
   const router = useRouter();
