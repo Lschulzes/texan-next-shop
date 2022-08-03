@@ -1,36 +1,13 @@
-import {
-  CreditCardOffOutlined,
-  CreditCardOutlined,
-  RemoveShoppingCartOutlined,
-} from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  FormControl,
-  Grid,
-  InputLabel,
-  Link,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import NextLink from "next/link";
-import React from "react";
-import CartList from "../../components/Cart/CartList";
-import OrderSummary from "../../components/Cart/OrderSummary";
-import Layout from "../../components/Layout";
+import { CreditCardOutlined } from '@mui/icons-material';
+import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
+import NextLink from 'next/link';
+import CartList from '../../components/Cart/CartList';
+import OrderSummary from '../../components/Cart/OrderSummary';
+import Layout from '../../components/Layout';
 
 const OrderPage = () => {
   return (
-    <Layout
-      title="Summary of the order 16515"
-      description="Summary of the order"
-    >
+    <Layout title="Summary of the order 16515" description="Summary of the order">
       <Typography variant="h1" component="h1">
         Order #16515
       </Typography>
@@ -47,11 +24,7 @@ const OrderPage = () => {
 
               <Divider sx={{ my: 1 }} />
 
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="subtitle1">Delivery Address</Typography>
 
                 <NextLink href="/checkout/address" passHref>
@@ -88,13 +61,7 @@ const OrderPage = () => {
         color="error"
         icon={<CreditCardOffOutlined />}
       /> */}
-              <Chip
-                sx={{ my: 2 }}
-                label="Paid"
-                variant="outlined"
-                color="success"
-                icon={<CreditCardOutlined />}
-              />
+              <Chip sx={{ my: 2 }} label="Paid" variant="outlined" color="success" icon={<CreditCardOutlined />} />
             </CardContent>
           </Card>
         </Grid>

@@ -1,24 +1,17 @@
-import Cookies from "js-cookie";
-import { useRouter } from "next/router";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { texanAPI } from "../../api";
-import { IUser } from "../../interfaces";
-import { FormInput } from "../../pages/auth/login";
-import { RegisterFormInput } from "../../pages/auth/register";
-import { CartContext, CART_KEY, useCart } from "../Cart";
-import { UserContextState } from "./useUser.utils";
+import { getProviders, signOut, useSession } from 'next-auth/react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { texanAPI } from '../../api';
+import { IUser } from '../../interfaces';
+import { FormInput } from '../../pages/auth/login';
+import { RegisterFormInput } from '../../pages/auth/register';
+import { useCart } from '../Cart';
+import { Providers, UserContextState } from './useUser.utils';
 
 const UserContext = createContext<UserContextState>({
   user: null,
   isLoading: true,
   isAuthenticated: false,
+  providers: [],
 
   logoutUser: () => null,
   loginUser: (formData: FormInput) => formData && Promise.resolve(),
@@ -29,31 +22,27 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [providers, setProviders] = useState<Providers>([]);
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(Object.values(prov || {}));
+    });
+  }, []);
 
   const { removeAllProducts } = useCart();
 
-  const token = Cookies.get("token");
-
+  const { data, status } = useSession();
   useEffect(() => {
-    if (!!user || isAuthenticated || !token) return;
-    const controller = new AbortController();
+    if (status !== 'authenticated' || isAuthenticated) return;
 
-    (async () => {
-      setIsLoading(true);
-      const { data } = await texanAPI.get("/user/validate-jwt");
-      setIsLoading(false);
-      if (!data.user) return;
-
-      setUser(data.user);
-      setIsAuthenticated(true);
-    })();
-
-    return () => controller.abort();
-  }, [user, isAuthenticated, token]);
+    setUser(data.user as IUser);
+    setIsAuthenticated(true);
+  }, [status, data, isAuthenticated]);
 
   const loginUser = useCallback(async (formData: FormInput) => {
     setIsLoading(true);
-    const { data } = await texanAPI.post("/user/login", formData);
+    const { data } = await texanAPI.post('/user/login', formData);
     setIsLoading(false);
     if (!data.user) return;
 
@@ -63,16 +52,12 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
 
   const registerUser = useCallback(async (formData: RegisterFormInput) => {
     setIsLoading(true);
-    const { data } = await texanAPI.post("/user/register", formData);
+    await texanAPI.post('/user/register', formData);
     setIsLoading(false);
-    if (!data.user) return;
-
-    setUser(data.user);
-    setIsAuthenticated(true);
   }, []);
 
-  const logoutUser = useCallback(() => {
-    Cookies.remove("token");
+  const logoutUser = useCallback(async () => {
+    await signOut();
     removeAllProducts();
     setUser(null);
     setIsAuthenticated(false);
@@ -86,13 +71,12 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
       logoutUser,
       loginUser,
       registerUser,
+      providers,
     }),
-    [user, isAuthenticated, logoutUser, isLoading, loginUser, registerUser]
+    [user, isAuthenticated, logoutUser, isLoading, loginUser, registerUser, providers],
   );
 
-  return (
-    <UserContext.Provider value={state}>{props.children}</UserContext.Provider>
-  );
+  return <UserContext.Provider value={state}>{props.children}</UserContext.Provider>;
 };
 
 const useUser = () => useContext(UserContext);

@@ -1,46 +1,29 @@
-import { NextRequest, NextResponse } from "next/server";
-import * as jose from "jose";
+import { getToken } from 'next-auth/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const token = req.cookies.get("token") || "";
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || '' });
 
-  if (pathname.startsWith("/checkout")) {
-    const isTokenValid = await verifyTokenValid(token);
-
-    if (isTokenValid) return NextResponse.next();
+  if (pathname.startsWith('/checkout')) {
+    if (token) return NextResponse.next();
 
     const { protocol, host, pathname } = req.nextUrl;
 
-    return NextResponse.redirect(
-      `${protocol}//${host}/auth/login?previousPath=${pathname}`
-    );
+    return NextResponse.redirect(`${protocol}//${host}/auth/login?previousPath=${pathname}`);
   }
 
-  if (pathname.startsWith("/auth")) {
-    const isTokenValid = await verifyTokenValid(token);
-
-    if (isTokenValid) {
-      const { protocol, host } = req.nextUrl;
-      return NextResponse.redirect(`${protocol}//${host}/ `);
+  if (pathname.startsWith('/auth')) {
+    if (token) {
+      const { protocol, host, search } = req.nextUrl;
+      const previousPath = search.split('previousPath=')[1]?.split('%2F').join('/') || '';
+      return NextResponse.redirect(`${protocol}//${host}${previousPath}`);
     }
 
     return NextResponse.next();
   }
 }
 
-const verifyTokenValid = async (token: string) => {
-  try {
-    await jose.jwtVerify(
-      token || "",
-      new TextEncoder().encode(process.env.JWT_SECRET_SEED || "")
-    );
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
-
 export const config = {
-  matcher: ["/checkout/:path*", "/auth/:path*"],
+  matcher: ['/checkout/:path*', '/auth/:path*'],
 };

@@ -1,18 +1,15 @@
-import { Button, Chip, Grid, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
-import React, { FC, useContext, useEffect, useState } from "react";
-import ItemCounter from "../../components/ItemCounter";
-import Layout from "../../components/Layout";
-import SizeSelector from "../../components/products/SizeSelector";
-import Slideshow from "../../components/Slideshow";
-import { CartContext, useCart } from "../../context";
-import {
-  getAllProductsSlugs,
-  getProductBySlug,
-} from "../../database/dbProducts";
-import { ICartProduct, IProduct, ISize } from "../../interfaces";
+import { Button, Chip, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+import { FC, useState } from 'react';
+import ItemCounter from '../../components/ItemCounter';
+import Layout from '../../components/Layout';
+import SizeSelector from '../../components/products/SizeSelector';
+import Slideshow from '../../components/Slideshow';
+import { useCart } from '../../context';
+import { getAllProductsSlugs, getProductBySlug } from '../../database/dbProducts';
+import { ICartProduct, IProduct, ISize } from '../../interfaces';
 
 type PageProps = {
   product: IProduct;
@@ -21,9 +18,7 @@ type PageProps = {
 const Slug: FC<PageProps> = ({ product }) => {
   const router = useRouter();
 
-  const [productForCart, setProductForCart] = useState<ICartProduct | null>(
-    mapProductToCartProduct(product)
-  );
+  const [productForCart, setProductForCart] = useState<ICartProduct | null>(mapProductToCartProduct(product));
 
   const { addProduct } = useCart();
 
@@ -69,11 +64,7 @@ const Slug: FC<PageProps> = ({ product }) => {
                 maxNumber={product.inStock}
                 count={productForCart.quantity}
               />
-              <SizeSelector
-                onChangeSize={handleChangeSize}
-                selectedSize={productForCart.size}
-                sizes={product.sizes}
-              />
+              <SizeSelector onChangeSize={handleChangeSize} selectedSize={productForCart.size} sizes={product.sizes} />
             </Box>
 
             {product.inStock === 0 ? (
@@ -85,7 +76,7 @@ const Slug: FC<PageProps> = ({ product }) => {
                 className="circular-btn"
                 onClick={handleAddProductToCart}
               >
-                {productForCart.size ? "Add to cart" : "Select a size"}
+                {productForCart.size ? 'Add to cart' : 'Select a size'}
               </Button>
             )}
 
@@ -111,13 +102,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { slug = "" } = params as { slug: string };
+  const { slug = '' } = params as { slug: string };
   const product = await getProductBySlug(slug);
 
   if (!product)
     return {
       redirect: {
-        destination: "/",
+        destination: '/',
         permanent: false,
       },
     };
