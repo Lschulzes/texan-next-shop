@@ -1,7 +1,8 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
-import { checkUserEmailPassword } from './../../../database/dbUsers';
+import { SessionNextAuth } from '../../../context/Auth/useUser.utils';
+import { checkUserEmailPassword, OAuthoDbUser } from './../../../database/dbUsers';
 
 export default NextAuth({
   providers: [
@@ -32,11 +33,16 @@ export default NextAuth({
 
       switch (account.type) {
         case 'oauth':
+          token.user = await OAuthoDbUser(token.email || '', token.name || '');
           break;
         case 'email':
           break;
         case 'credentials':
-          token.user = user;
+          const authData = user as unknown as SessionNextAuth;
+          token.user = {
+            ...authData._doc,
+            email: authData.email,
+          };
           break;
       }
 

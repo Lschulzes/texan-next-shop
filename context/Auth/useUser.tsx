@@ -6,7 +6,7 @@ import { IUser } from '../../interfaces';
 import { FormInput } from '../../pages/auth/login';
 import { RegisterFormInput } from '../../pages/auth/register';
 import { useCart } from '../Cart';
-import { SessionNextAuth, UserContextState } from './useUser.utils';
+import { UserContextState } from './useUser.utils';
 
 const UserContext = createContext<UserContextState>({
   user: null,
@@ -28,12 +28,8 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const { data, status } = useSession();
   useEffect(() => {
     if (status !== 'authenticated' || isAuthenticated) return;
-    const authData = data as unknown as SessionNextAuth;
 
-    setUser({
-      ...authData.user._doc,
-      email: authData.user?.email,
-    });
+    setUser(data.user as IUser);
     setIsAuthenticated(true);
   }, [status, data, isAuthenticated]);
 

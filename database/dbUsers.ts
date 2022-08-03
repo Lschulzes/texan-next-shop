@@ -11,3 +11,24 @@ export const checkUserEmailPassword = async (email: string, password: string) =>
 
   return { ...user, email };
 };
+
+export const OAuthoDbUser = async (OAuthEmail: string, OAuthName: string) => {
+  await db.connect();
+  const user = await UserModel.findOne({ email: OAuthEmail });
+
+  if (user) {
+    await db.disconnect();
+    const { _id, name, email, role } = user;
+    return { _id, name, email, role };
+  }
+
+  const newUser = await UserModel.create({
+    email: OAuthEmail,
+    name: OAuthName,
+    role: 'client',
+    password: '@@@@@@@@@@',
+  });
+  await db.disconnect();
+  const { _id, name, email, role } = newUser;
+  return { _id, name, email, role };
+};

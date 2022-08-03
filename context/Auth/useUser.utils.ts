@@ -16,6 +16,4 @@ export type UserContextState = {
 
 export const USER_KEY = '@texan-base-info';
 
-export type SessionNextAuth = {
-  user: IUser & { _doc: IUser };
-};
+export type SessionNextAuth = IUser & { _doc: IUser };
