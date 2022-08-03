@@ -1,5 +1,5 @@
 import { ErrorOutline } from '@mui/icons-material';
-import { Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { signIn } from 'next-auth/react';
 import NextLink from 'next/link';
@@ -110,6 +110,10 @@ const LoginPage = () => {
               <NextLink href={`/auth/register?previousPath=${previousPath}`} passHref>
                 <Link underline="always">{"Don't have an account?"}</Link>
               </NextLink>
+            </Grid>
+
+            <Grid item xs={12} display="flex" justifyContent="end">
+              <Divider sx={{ width: '100%', mb: 2 }} />
             </Grid>
           </Grid>
         </Box>

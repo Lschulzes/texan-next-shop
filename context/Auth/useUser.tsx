@@ -1,17 +1,17 @@
-import Cookies from 'js-cookie';
-import { signOut, useSession } from 'next-auth/react';
+import { getProviders, signOut, useSession } from 'next-auth/react';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { texanAPI } from '../../api';
 import { IUser } from '../../interfaces';
 import { FormInput } from '../../pages/auth/login';
 import { RegisterFormInput } from '../../pages/auth/register';
 import { useCart } from '../Cart';
-import { UserContextState } from './useUser.utils';
+import { Providers, UserContextState } from './useUser.utils';
 
 const UserContext = createContext<UserContextState>({
   user: null,
   isLoading: true,
   isAuthenticated: false,
+  providers: [],
 
   logoutUser: () => null,
   loginUser: (formData: FormInput) => formData && Promise.resolve(),
@@ -22,6 +22,13 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [providers, setProviders] = useState<Providers>([]);
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(Object.values(prov || {}));
+    });
+  }, []);
 
   const { removeAllProducts } = useCart();
 
@@ -32,25 +39,6 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
     setUser(data.user as IUser);
     setIsAuthenticated(true);
   }, [status, data, isAuthenticated]);
-
-  const token = Cookies.get('token');
-
-  useEffect(() => {
-    if (!!user || isAuthenticated || !token) return;
-    const controller = new AbortController();
-
-    (async () => {
-      setIsLoading(true);
-      const { data } = await texanAPI.get('/user/validate-jwt');
-      setIsLoading(false);
-      if (!data.user) return;
-
-      setUser(data.user);
-      setIsAuthenticated(true);
-    })();
-
-    return () => controller.abort();
-  }, [user, isAuthenticated, token]);
 
   const loginUser = useCallback(async (formData: FormInput) => {
     setIsLoading(true);
@@ -69,8 +57,8 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   }, []);
 
   const logoutUser = useCallback(async () => {
-    removeAllProducts();
     await signOut();
+    removeAllProducts();
     setUser(null);
     setIsAuthenticated(false);
   }, [removeAllProducts]);
@@ -83,8 +71,9 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
       logoutUser,
       loginUser,
       registerUser,
+      providers,
     }),
-    [user, isAuthenticated, logoutUser, isLoading, loginUser, registerUser],
+    [user, isAuthenticated, logoutUser, isLoading, loginUser, registerUser, providers],
   );
 
   return <UserContext.Provider value={state}>{props.children}</UserContext.Provider>;
