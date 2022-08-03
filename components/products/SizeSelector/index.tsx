@@ -1,6 +1,5 @@
-import { Box, Button } from "@mui/material";
-import React from "react";
-import { ISize } from "../../../interfaces";
+import { Box, Button } from '@mui/material';
+import { ISize } from '../../../interfaces';
 
 type Props = {
   selectedSize?: string;
@@ -16,7 +15,7 @@ const SizeSelector = ({ selectedSize, sizes, onChangeSize }: Props) => {
           onClick={() => onChangeSize(size)}
           key={size}
           size="small"
-          color={selectedSize === size ? "primary" : "info"}
+          color={selectedSize === size ? 'primary' : 'info'}
         >
           {size}
         </Button>

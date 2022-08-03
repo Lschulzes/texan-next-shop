@@ -1,6 +1,5 @@
-import { Divider, Grid, Typography } from "@mui/material";
-import React, { useContext } from "react";
-import { CartContext, useCart } from "../../../context";
+import { Divider, Grid, Typography } from '@mui/material';
+import { useCart } from '../../../context';
 
 const OrderSummary = () => {
   const { discount, subTotal, quantity, total } = useCart();
@@ -24,9 +23,7 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6}>
-        <Typography>
-          Discounts ({+(process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)
-        </Typography>
+        <Typography>Discounts ({+(process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)</Typography>
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
@@ -50,5 +47,4 @@ const OrderSummary = () => {
 
 export default OrderSummary;
 
-const formatToTwoDecimal = (number: number) =>
-  (Math.round(number * 100) / 100).toFixed(2);
+const formatToTwoDecimal = (number: number) => (Math.round(number * 100) / 100).toFixed(2);

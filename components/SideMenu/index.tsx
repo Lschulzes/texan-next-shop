@@ -1,18 +1,4 @@
 import {
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  Input,
-  InputAdornment,
-  Link,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from "@mui/material";
-import {
   AccountCircleOutlined,
   AdminPanelSettings,
   CategoryOutlined,
@@ -21,14 +7,14 @@ import {
   FemaleOutlined,
   LoginOutlined,
   MaleOutlined,
-  SearchOutlined,
   VpnKeyOutlined,
-} from "@mui/icons-material";
-import { useContext, useEffect, useState } from "react";
-import { UIContext } from "../../context";
-import { useRouter } from "next/router";
-import SearchInput from "../SearchInput";
-import useUser from "../../context/Auth/useUser";
+} from '@mui/icons-material';
+import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { UIContext } from '../../context';
+import useUser from '../../context/Auth/useUser';
+import SearchInput from '../SearchInput';
 
 export const SideMenu = () => {
   const router = useRouter();
@@ -47,7 +33,7 @@ export const SideMenu = () => {
     <Drawer
       open={isSidemenuOpen}
       anchor="right"
-      sx={{ backdropFilter: "blur(4px)", transition: "all 0.5s ease-out" }}
+      sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
       onClose={toggleSideMenu}
     >
       <Box sx={{ width: 250, paddingTop: 5 }}>
@@ -74,21 +60,21 @@ export const SideMenu = () => {
             </>
           )}
 
-          <ListItem button onClick={() => navigateTo("/category/men")}>
+          <ListItem button onClick={() => navigateTo('/category/men')}>
             <ListItemIcon>
               <MaleOutlined />
             </ListItemIcon>
             <ListItemText primary="Men" />
           </ListItem>
 
-          <ListItem button onClick={() => navigateTo("/category/women")}>
+          <ListItem button onClick={() => navigateTo('/category/women')}>
             <ListItemIcon>
               <FemaleOutlined />
             </ListItemIcon>
             <ListItemText primary="Women" />
           </ListItem>
 
-          <ListItem button onClick={() => navigateTo("/category/kid")}>
+          <ListItem button onClick={() => navigateTo('/category/kid')}>
             <ListItemIcon>
               <EscalatorWarningOutlined />
             </ListItemIcon>
@@ -96,12 +82,7 @@ export const SideMenu = () => {
           </ListItem>
 
           {!isAuthenticated ? (
-            <ListItem
-              button
-              onClick={() =>
-                navigateTo(`/auth/login?previousPath=${router.asPath}`)
-              }
-            >
+            <ListItem button onClick={() => navigateTo(`/auth/login?previousPath=${router.asPath}`)}>
               <ListItemIcon>
                 <VpnKeyOutlined />
               </ListItemIcon>
@@ -116,7 +97,7 @@ export const SideMenu = () => {
             </ListItem>
           )}
 
-          {isAuthenticated && user && user.role === "admin" && (
+          {isAuthenticated && user && user.role === 'admin' && (
             <>
               <Divider />
 
@@ -129,7 +110,7 @@ export const SideMenu = () => {
                 <ListItemText primary="Products" />
               </ListItem>
 
-              <ListItem button onClick={() => navigateTo("/orders/history")}>
+              <ListItem button onClick={() => navigateTo('/orders/history')}>
                 <ListItemIcon>
                   <ConfirmationNumberOutlined />
                 </ListItemIcon>

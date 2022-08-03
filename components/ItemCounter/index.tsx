@@ -1,6 +1,5 @@
-import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
-import { Box, IconButton, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
+import { Box, IconButton, Typography } from '@mui/material';
 
 type Props = {
   maxNumber: number;

@@ -1,16 +1,7 @@
-import {
-  Grid,
-  Card,
-  CardActionArea,
-  CardMedia,
-  Box,
-  Typography,
-  Link,
-  Chip,
-} from "@mui/material";
-import NextLink from "next/link";
-import React, { useMemo, useState } from "react";
-import { IProduct } from "../../../interfaces";
+import { Box, Card, CardActionArea, CardMedia, Chip, Grid, Link, Typography } from '@mui/material';
+import NextLink from 'next/link';
+import { useMemo, useState } from 'react';
+import { IProduct } from '../../../interfaces';
 
 type Props = {
   product: IProduct;
@@ -27,13 +18,7 @@ const ProductCard = ({ product }: Props) => {
   }, [isHovered, images]);
 
   return (
-    <Grid
-      item
-      xs={6}
-      sm={4}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <Grid item xs={6} sm={4} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <Card>
         <NextLink href={`/product/${slug}`} passHref prefetch={false}>
           <Link>
@@ -43,10 +28,10 @@ const ProductCard = ({ product }: Props) => {
                   color="primary"
                   label="Not Available"
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     zIndex: 99,
-                    top: "0.75rem",
-                    left: "0.75rem",
+                    top: '0.75rem',
+                    left: '0.75rem',
                   }}
                 />
               )}
@@ -63,7 +48,7 @@ const ProductCard = ({ product }: Props) => {
         </NextLink>
       </Card>
 
-      <Box mt={1} display={isImageLoaded ? "block" : "none"} className="fadeIn">
+      <Box mt={1} display={isImageLoaded ? 'block' : 'none'} className="fadeIn">
         <Typography>{title}</Typography>
         <Typography>${price}</Typography>
       </Box>

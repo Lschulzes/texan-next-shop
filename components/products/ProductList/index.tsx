@@ -1,7 +1,6 @@
-import { Grid } from "@mui/material";
-import React from "react";
-import { IProduct } from "../../../interfaces";
-import ProductCard from "../ProductCard";
+import { Grid } from '@mui/material';
+import { IProduct } from '../../../interfaces';
+import ProductCard from '../ProductCard';
 
 type Props = {
   products: Array<IProduct>;
