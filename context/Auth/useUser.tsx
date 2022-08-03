@@ -64,18 +64,13 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
 
   const registerUser = useCallback(async (formData: RegisterFormInput) => {
     setIsLoading(true);
-    const { data } = await texanAPI.post('/user/register', formData);
+    await texanAPI.post('/user/register', formData);
     setIsLoading(false);
-    if (!data.user) return;
-
-    setUser(data.user);
-    setIsAuthenticated(true);
   }, []);
 
-  const logoutUser = useCallback(() => {
-    Cookies.remove('token');
+  const logoutUser = useCallback(async () => {
     removeAllProducts();
-    signOut();
+    await signOut();
     setUser(null);
     setIsAuthenticated(false);
   }, [removeAllProducts]);

@@ -14,7 +14,7 @@ export type FormInput = {
   password: string;
 };
 
-type LoginError = { response: { data: { message: string } } };
+export type LoginRegisterError = { response: { data: { message: string } } };
 
 const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -35,7 +35,7 @@ const LoginPage = () => {
 
       router.push(`${previousPath}`);
     } catch (error) {
-      setErrorMessage((error as LoginError).response.data.message);
+      setErrorMessage((error as LoginRegisterError).response.data.message);
     }
   };
 
