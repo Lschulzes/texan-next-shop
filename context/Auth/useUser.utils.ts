@@ -1,6 +1,6 @@
-import { IUser } from "../../interfaces";
-import { FormInput } from "../../pages/auth/login";
-import { RegisterFormInput } from "../../pages/auth/register";
+import { IUser } from '../../interfaces';
+import { FormInput } from '../../pages/auth/login';
+import { RegisterFormInput } from '../../pages/auth/register';
 
 export type UserContextState = {
   user: IUser | null;
@@ -14,4 +14,8 @@ export type UserContextState = {
   registerUser: (formData: RegisterFormInput) => Promise<void>;
 };
 
-export const USER_KEY = "@texan-base-info";
+export const USER_KEY = '@texan-base-info';
+
+export type SessionNextAuth = {
+  user: IUser & { _doc: IUser };
+};

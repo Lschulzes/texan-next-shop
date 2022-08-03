@@ -1,12 +1,12 @@
 import Cookies from 'js-cookie';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { texanAPI } from '../../api';
 import { IUser } from '../../interfaces';
 import { FormInput } from '../../pages/auth/login';
 import { RegisterFormInput } from '../../pages/auth/register';
 import { useCart } from '../Cart';
-import { UserContextState } from './useUser.utils';
+import { SessionNextAuth, UserContextState } from './useUser.utils';
 
 const UserContext = createContext<UserContextState>({
   user: null,
@@ -26,10 +26,16 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const { removeAllProducts } = useCart();
 
   const { data, status } = useSession();
-
   useEffect(() => {
-    if (status !== 'authenticated') return;
-  }, [status, data]);
+    if (status !== 'authenticated' || isAuthenticated) return;
+    const authData = data as unknown as SessionNextAuth;
+
+    setUser({
+      ...authData.user._doc,
+      email: authData.user?.email,
+    });
+    setIsAuthenticated(true);
+  }, [status, data, isAuthenticated]);
 
   const token = Cookies.get('token');
 
@@ -73,6 +79,7 @@ export const UserProvider = (props: { children: React.ReactNode }) => {
   const logoutUser = useCallback(() => {
     Cookies.remove('token');
     removeAllProducts();
+    signOut();
     setUser(null);
     setIsAuthenticated(false);
   }, [removeAllProducts]);
