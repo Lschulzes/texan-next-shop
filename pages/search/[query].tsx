@@ -1,27 +1,9 @@
-import {
-  Card,
-  CardActionArea,
-  CardMedia,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
-import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import FullScreenLoading from "../../components/FullScreenLoading";
-import Layout from "../../components/Layout";
-import ProductList from "../../components/products/ProductList";
-import {
-  getAllProducts,
-  getAllProductsByTerm,
-} from "../../database/dbProducts";
-import { initialData } from "../../database/seed-data";
-import { useProducts } from "../../hooks";
-import { IProduct } from "../../interfaces";
+import { Typography } from '@mui/material';
+import type { GetServerSideProps, NextPage } from 'next';
+import Layout from '../../components/Layout';
+import ProductList from '../../components/products/ProductList';
+import { getAllProducts, getAllProductsByTerm } from '../../database/dbProducts';
+import { IProduct } from '../../interfaces';
 
 type SearchPageProps = {
   products: Array<IProduct>;
@@ -29,16 +11,9 @@ type SearchPageProps = {
   query: string;
 };
 
-const SearchPage: NextPage<SearchPageProps> = ({
-  products,
-  successfulQuery,
-  query,
-}) => {
+const SearchPage: NextPage<SearchPageProps> = ({ products, successfulQuery, query }: SearchPageProps) => {
   return (
-    <Layout
-      title="Texan-Shop - Search"
-      description="Find the best texan products here"
-    >
+    <Layout title="Texan-Shop - Search" description="Find the best texan products here">
       <Typography variant="h1" component="h1" textTransform="capitalize">
         Search Product
       </Typography>
@@ -48,8 +23,7 @@ const SearchPage: NextPage<SearchPageProps> = ({
         </Typography>
       ) : (
         <Typography variant="h2" mb="1">
-          No products found with the term of {`"${query}"`}, checkout some other
-          ones bellow
+          No products found with the term of {`"${query}"`}, checkout some other ones bellow
         </Typography>
       )}
 
@@ -58,15 +32,13 @@ const SearchPage: NextPage<SearchPageProps> = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (
-  params
-) => {
-  const { query = "" } = params.query as { query: string };
+export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (params) => {
+  const { query = '' } = params.query as { query: string };
 
   if (query.length === 0)
     return {
       redirect: {
-        destination: "/",
+        destination: '/',
         permanent: true,
       },
     };
