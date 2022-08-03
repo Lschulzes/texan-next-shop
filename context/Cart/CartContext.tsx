@@ -1,13 +1,14 @@
-import { createContext, useContext } from "react";
-import { ICartProduct } from "../../interfaces/cart";
-import { COUNTRIES } from "../../utils";
+import { createContext, useContext } from 'react';
+import { ICartProduct } from '../../interfaces/cart';
+import { COUNTRIES } from '../../utils';
+import { CreateOrderDispatch } from './CartProvider';
 
 export type BillingAddress = {
   name: string;
   lastName: string;
   address: string;
   ZIP: string;
-  country: typeof COUNTRIES[0]["code"];
+  country: typeof COUNTRIES[0]['code'];
   phoneNumber: string;
 };
 interface ContextProps {
@@ -26,6 +27,7 @@ interface ContextProps {
   removeProduct: (product: ICartProduct) => void;
   removeAllProducts: () => void;
   updateBillingAddress: (billingAddress: BillingAddress) => void;
+  createOrder: (orderData: CreateOrderDispatch) => Promise<void>;
 }
 
 export const CartContext = createContext({} as ContextProps);

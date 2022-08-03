@@ -5,11 +5,19 @@ import OrderSummary from '../../components/Cart/OrderSummary';
 import FullScreenLoading from '../../components/FullScreenLoading';
 import Layout from '../../components/Layout';
 import { useCart } from '../../context';
+import useUser from '../../context/Auth/useUser';
 
 const SummaryPage = () => {
-  const { billingAddress } = useCart();
+  const { billingAddress, createOrder, products } = useCart();
+  const { user } = useUser();
 
   if (!billingAddress) return <FullScreenLoading />;
+
+  const onCreateOrder = async () => {
+    if (!user) return;
+
+    await createOrder({ billingAddress, items: products, user: user._id });
+  };
 
   return (
     <Layout title="Summary of the order" description="Summary of the order">
@@ -58,7 +66,7 @@ const SummaryPage = () => {
               <OrderSummary />
 
               <Box mt={3}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+                <Button color="secondary" onClick={onCreateOrder} className="circular-btn" fullWidth>
                   Confirm Order
                 </Button>
               </Box>
