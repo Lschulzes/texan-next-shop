@@ -49,6 +49,7 @@ const OrderSchema: Schema<IOrder> = new Schema(
     paidAt: { type: String },
     subTotal: { type: Number, required: true },
     total: { type: Number, required: true },
+    transactionId: { type: String },
   },
 
   {

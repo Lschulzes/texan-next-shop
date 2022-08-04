@@ -37,7 +37,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderRes
     const orderItems: CreateOrderDispatch['items'] = getOrderItems(data.items, mappedProducts);
     const subTotal = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const discountPercentage = Number(process.env.NEXT_PUBLIC_DISCOUNT) || 0;
-    const total = subTotal * (1 - discountPercentage);
+    const total = Math.round(subTotal * (1 - discountPercentage) * 100) / 100;
     const discount = subTotal - total;
 
     const order = await OrderModel.create({
