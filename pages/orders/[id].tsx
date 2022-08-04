@@ -1,29 +1,20 @@
 import { CreditCardOutlined } from '@mui/icons-material';
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { texanAPI } from '../../api';
 import CartList from '../../components/Cart/CartList';
 import OrderSummary from '../../components/Cart/OrderSummary';
-import FullScreenLoading from '../../components/FullScreenLoading';
 import Layout from '../../components/Layout';
 import { IOrder } from '../../interfaces';
+import { getOrderByID } from '../api/orders/[id]';
 
-const OrderPage = () => {
-  const [order, setOrder] = useState<IOrder>();
+type OrderPageProps = { order: IOrder };
+
+const OrderPage = ({ order }: OrderPageProps) => {
   const router = useRouter();
   const { id } = router.query;
-
-  useEffect(() => {
-    texanAPI.get(`/orders/${id}`).then((res) => {
-      if (res.status === 200) {
-        return setOrder(res.data.data);
-      }
-    });
-  }, [id]);
-
-  if (!order) return <FullScreenLoading />;
 
   const { address, country, lastName, name, phoneNumber } = order.billingAddress;
   const { discount, total, subTotal } = order;
@@ -96,3 +87,29 @@ const OrderPage = () => {
 };
 
 export default OrderPage;
+
+export const getServerSideProps: GetServerSideProps<OrderPageProps> = async ({ query, req }) => {
+  try {
+    const { id } = query;
+    const session = await getSession({ req });
+
+    const order = await getOrderByID(id?.toString() || '');
+
+    if (!session || (session?.user as unknown as { _id: string })?._id !== order.user)
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+
+    return { props: { order } };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+};
