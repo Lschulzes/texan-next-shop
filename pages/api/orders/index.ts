@@ -18,8 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   switch (req.method) {
     case 'POST':
       return await createOrder(req, res);
-    case 'GET':
-      return await getOrders(req, res);
   }
 
   res.status(400).json({ message: 'route not found!' });
@@ -55,10 +53,6 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderRes
     console.error({ error });
     return res.status(400).json({ status: 'failed' });
   }
-};
-
-const getOrders = async (req: NextApiRequest, res: NextApiResponse<APIOrderResponse>) => {
-  return res.status(200).json({ status: 'success', results: 0 });
 };
 
 const getOrderItems = (items: CreateOrderDispatch['items'], mappedProducts: { [key: string]: IProduct }) =>

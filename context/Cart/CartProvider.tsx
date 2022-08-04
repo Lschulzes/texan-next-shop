@@ -97,6 +97,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     try {
       const { data } = await texanAPI.post('/orders', orderData);
 
+      dispatch({ type: 'Cart - Remove All Products' });
+
       return {
         hasError: false,
         _id: data.data._id,
