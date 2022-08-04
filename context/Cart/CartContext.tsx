@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import { ICartProduct } from '../../interfaces/cart';
 import { COUNTRIES } from '../../utils';
-import { CreateOrderDispatch } from './CartProvider';
+import { CreateOrderDispatch, CreateOrderReturn } from './CartProvider';
 
 export type BillingAddress = {
   name: string;
@@ -27,7 +27,7 @@ interface ContextProps {
   removeProduct: (product: ICartProduct) => void;
   removeAllProducts: () => void;
   updateBillingAddress: (billingAddress: BillingAddress) => void;
-  createOrder: (orderData: CreateOrderDispatch) => Promise<void>;
+  createOrder: (orderData: CreateOrderDispatch) => Promise<CreateOrderReturn>;
 }
 
 export const CartContext = createContext({} as ContextProps);

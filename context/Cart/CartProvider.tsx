@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { default as Cookie, default as Cookies } from 'js-cookie';
 import { ReactNode, useEffect, useReducer } from 'react';
 import { CartContext, CartReducer } from '.';
@@ -92,12 +93,25 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     });
   };
 
-  const createOrder = async (orderData: CreateOrderDispatch) => {
+  const createOrder = async (orderData: CreateOrderDispatch): Promise<CreateOrderReturn> => {
     try {
       const { data } = await texanAPI.post('/orders', orderData);
-      console.log({ data });
+
+      return {
+        hasError: false,
+        _id: data.data._id,
+      };
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        return {
+          hasError: true,
+          message: (error.response?.data as { message: string }).message,
+        };
+      }
+      return {
+        hasError: true,
+        message: 'Internal error',
+      };
     }
   };
 
@@ -126,3 +140,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     </CartContext.Provider>
   );
 };
+
+export type CreateOrderReturn =
+  | {
+      hasError: true;
+      message: string;
+    }
+  | {
+      hasError: false;
+      _id: string;
+    };

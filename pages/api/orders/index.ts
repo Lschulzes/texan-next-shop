@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 import { CreateOrderDispatch } from '../../../context';
 import { db } from '../../../database';
 import { IOrder, IProduct } from '../../../interfaces';
 import { ProductModel } from '../../../models';
 import OrderModel from '../../../models/OrderModel';
+import { AppError } from '../../../utils';
 
 export type APIOrderResponse = {
   message?: string;
@@ -26,6 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderResponse>) => {
   try {
     await db.connect();
+
+    const session = (await getSession({ req })) as unknown as { user: { _id: string } };
+    if (!session) throw new AppError('No user found!', 403);
+
     const data = req.body as CreateOrderDispatch;
     const productsIds = data.items.map(({ _id }) => _id);
     const mappedProducts = await getMappedProducts(productsIds);
@@ -36,7 +42,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderRes
 
     const order = await OrderModel.create({
       billingAddress: data.billingAddress,
-      user: data.user,
+      user: session.user._id,
       orderItems,
       discount,
       subTotal,
