@@ -1,4 +1,4 @@
-import { CreditCardOutlined } from '@mui/icons-material';
+import { CreditCardOffOutlined, CreditCardOutlined } from '@mui/icons-material';
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
@@ -70,14 +70,17 @@ const OrderPage = ({ order }: OrderPageProps) => {
                 <h1>Pay</h1>
               </Box>
 
-              {/* <Chip
-        sx={{ my: 2 }}
-        label="Payment Pending"
-        variant="outlined"
-        color="error"
-        icon={<CreditCardOffOutlined />}
-      /> */}
-              <Chip sx={{ my: 2 }} label="Paid" variant="outlined" color="success" icon={<CreditCardOutlined />} />
+              {order.isPaid ? (
+                <Chip sx={{ my: 2 }} label="Paid" variant="outlined" color="success" icon={<CreditCardOutlined />} />
+              ) : (
+                <Chip
+                  sx={{ my: 2 }}
+                  label="Payment Pending"
+                  variant="outlined"
+                  color="error"
+                  icon={<CreditCardOffOutlined />}
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>

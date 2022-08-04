@@ -39,3 +39,11 @@ export const getOrderByID = async (id: string) => {
 
   return JSON.parse(JSON.stringify(order));
 };
+
+export const getUserOrders = async (userId: string) => {
+  await db.connect();
+  const order = await OrderModel.find({ user: userId });
+  await db.disconnect();
+
+  return JSON.parse(JSON.stringify(order));
+};

@@ -32,7 +32,11 @@ const OrderSummary = ({ data }: OrderSummaryProps) => {
       </Grid>
 
       <Grid item xs={6}>
-        <Typography>Discounts ({+(data?.discount || process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)</Typography>
+        <Typography>
+          Discounts (
+          {(+((data?.discount || 0) / (data?.subTotal || 0) || process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100).toFixed(0)}
+          %)
+        </Typography>
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">

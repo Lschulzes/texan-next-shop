@@ -1,11 +1,52 @@
 import { Chip, Grid, Link, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import Layout from '../../components/Layout';
+import { IOrder } from '../../interfaces';
+import { getUserOrders } from '../api/orders/[id]';
+
+type HistoryPageProps = { orders: Array<IOrder>; name: string };
+
+const HistoryPage = ({ orders, name }: HistoryPageProps) => {
+  const rows = orders.map((order) => ({ id: order._id, paid: order.isPaid, full_name: name }));
+  return (
+    <Layout title="History of orders" description="History of orders">
+      <Typography variant="h1" component="h1">
+        History of orders
+      </Typography>
+
+      <Grid container>
+        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+          <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
+        </Grid>
+      </Grid>
+    </Layout>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps<HistoryPageProps> = async ({ req }) => {
+  const session = await getSession({ req });
+
+  if (!session)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+
+  const orders = await getUserOrders((session.user as { _id: string })._id);
+
+  return { props: { orders, name: session.user?.name || '' } };
+};
+
+export default HistoryPage;
 
 const columns: Array<GridColDef> = [
-  { field: 'id', headerName: 'ID', width: 100 },
-  { field: 'full_name', headerName: 'Full Name', width: 100 },
+  { field: 'id', headerName: 'ID', width: 200 },
+  { field: 'full_name', headerName: 'Full Name', width: 200 },
   {
     field: 'paid',
     headerName: 'Paid',
@@ -23,7 +64,7 @@ const columns: Array<GridColDef> = [
     field: 'details',
     headerName: 'Details',
     description: 'Click to see the details',
-    width: 100,
+    width: 200,
     sortable: false,
     renderCell: (params: GridValueGetterParams) => {
       return (
@@ -34,31 +75,3 @@ const columns: Array<GridColDef> = [
     },
   },
 ];
-
-const rows = [
-  { id: '2', paid: true, full_name: 'Lucas Silva' },
-  { id: '3', paid: false, full_name: 'Douglas Silva' },
-  { id: '21', paid: false, full_name: 'Fierro Herrera' },
-  { id: '1', paid: false, full_name: 'Emin Hayes' },
-  { id: '7', paid: false, full_name: 'Jordan Still' },
-  { id: '81', paid: false, full_name: 'Willy John' },
-  { id: '9', paid: false, full_name: 'Less Mianto Yjar' },
-];
-
-const HistoryPage = () => {
-  return (
-    <Layout title="History of orders" description="History of orders">
-      <Typography variant="h1" component="h1">
-        History of orders
-      </Typography>
-
-      <Grid container>
-        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
-          <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
-        </Grid>
-      </Grid>
-    </Layout>
-  );
-};
-
-export default HistoryPage;
