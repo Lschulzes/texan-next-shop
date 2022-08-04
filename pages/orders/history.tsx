@@ -7,10 +7,16 @@ import Layout from '../../components/Layout';
 import { IOrder } from '../../interfaces';
 import { getUserOrders } from '../api/orders/[id]';
 
-type HistoryPageProps = { orders: Array<IOrder>; name: string };
+type HistoryPageProps = { orders: Array<IOrder> };
 
-const HistoryPage = ({ orders, name }: HistoryPageProps) => {
-  const rows = orders.map((order) => ({ id: order._id, paid: order.isPaid, full_name: name }));
+const HistoryPage = ({ orders }: HistoryPageProps) => {
+  const rows = orders.map((order, i) => ({
+    id: i + 1,
+    paid: order.isPaid,
+    full_name: `${order.billingAddress.name} ${order.billingAddress.lastName}`,
+    orderId: order._id,
+  }));
+
   return (
     <Layout title="History of orders" description="History of orders">
       <Typography variant="h1" component="h1">
@@ -39,7 +45,7 @@ export const getServerSideProps: GetServerSideProps<HistoryPageProps> = async ({
 
   const orders = await getUserOrders((session.user as { _id: string })._id);
 
-  return { props: { orders, name: session.user?.name || '' } };
+  return { props: { orders } };
 };
 
 export default HistoryPage;
@@ -68,7 +74,7 @@ const columns: Array<GridColDef> = [
     sortable: false,
     renderCell: (params: GridValueGetterParams) => {
       return (
-        <NextLink href={`/orders/${params.row.id}`} passHref>
+        <NextLink href={`/orders/${params.row.orderId}`} passHref>
           <Link underline="always">Details</Link>
         </NextLink>
       );
