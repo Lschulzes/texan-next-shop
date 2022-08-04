@@ -1,26 +1,40 @@
-import { CreditCardOutlined } from '@mui/icons-material';
+import { CreditCardOffOutlined, CreditCardOutlined } from '@mui/icons-material';
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import CartList from '../../components/Cart/CartList';
 import OrderSummary from '../../components/Cart/OrderSummary';
 import Layout from '../../components/Layout';
+import { IOrder } from '../../interfaces';
+import { getOrderByID } from '../api/orders/[id]';
 
-const OrderPage = () => {
+type OrderPageProps = { order: IOrder };
+
+const OrderPage = ({ order }: OrderPageProps) => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const { address, country, lastName, name, phoneNumber } = order.billingAddress;
+  const { discount, total, subTotal } = order;
+  const quantity = order.orderItems.length;
+
   return (
-    <Layout title="Summary of the order 16515" description="Summary of the order">
+    <Layout title={`Summary of the order ${id}`} description="Summary of the order">
       <Typography variant="h1" component="h1">
-        Order #16515
+        Order #{id?.slice(0, 6)}
       </Typography>
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} sm={7}>
-          <CartList />
+          <CartList orderItems={order.orderItems} />
         </Grid>
 
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Summary (3 products)</Typography>
+              <Typography variant="h2">Summary ({quantity} products)</Typography>
 
               <Divider sx={{ my: 1 }} />
 
@@ -32,13 +46,15 @@ const OrderPage = () => {
                 </NextLink>
               </Box>
 
-              <Typography>Lucas Silva</Typography>
+              <Typography>
+                {name} {lastName}
+              </Typography>
 
-              <Typography>321 Main St., NY</Typography>
+              <Typography>{address}</Typography>
 
-              <Typography>USA</Typography>
+              <Typography>{country}</Typography>
 
-              <Typography>(589) 9855-328</Typography>
+              <Typography>{phoneNumber}</Typography>
 
               <Divider sx={{ my: 1 }} />
 
@@ -48,20 +64,23 @@ const OrderPage = () => {
                 </NextLink>
               </Box>
 
-              <OrderSummary />
+              <OrderSummary data={{ discount, quantity, subTotal, total }} />
 
               <Box mt={3}>
                 <h1>Pay</h1>
               </Box>
 
-              {/* <Chip
-        sx={{ my: 2 }}
-        label="Payment Pending"
-        variant="outlined"
-        color="error"
-        icon={<CreditCardOffOutlined />}
-      /> */}
-              <Chip sx={{ my: 2 }} label="Paid" variant="outlined" color="success" icon={<CreditCardOutlined />} />
+              {order.isPaid ? (
+                <Chip sx={{ my: 2 }} label="Paid" variant="outlined" color="success" icon={<CreditCardOutlined />} />
+              ) : (
+                <Chip
+                  sx={{ my: 2 }}
+                  label="Payment Pending"
+                  variant="outlined"
+                  color="error"
+                  icon={<CreditCardOffOutlined />}
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -71,3 +90,29 @@ const OrderPage = () => {
 };
 
 export default OrderPage;
+
+export const getServerSideProps: GetServerSideProps<OrderPageProps> = async ({ query, req }) => {
+  try {
+    const { id } = query;
+    const session = await getSession({ req });
+
+    const order = await getOrderByID(id?.toString() || '');
+
+    if (!session || (session?.user as unknown as { _id: string })?._id !== order.user)
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+
+    return { props: { order } };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+};

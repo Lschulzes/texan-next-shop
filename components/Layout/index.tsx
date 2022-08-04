@@ -1,7 +1,7 @@
-import Head from "next/head";
-import React, { ReactNode } from "react";
-import Navbar from "../Navbar";
-import { SideMenu } from "../SideMenu";
+import Head from 'next/head';
+import { ReactNode } from 'react';
+import Navbar from '../Navbar';
+import { SideMenu } from '../SideMenu';
 
 type Props = {
   title: string;
@@ -29,9 +29,9 @@ const Layout = ({ description, title, imageFullUrl, children }: Props) => {
 
       <main
         style={{
-          margin: "80px auto",
-          maxWidth: "1440px",
-          padding: "0px 30px",
+          margin: '80px auto',
+          maxWidth: '1440px',
+          padding: '0px 30px',
         }}
       >
         {children}
