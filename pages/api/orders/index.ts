@@ -36,7 +36,9 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderRes
 
     const orderItems: CreateOrderDispatch['items'] = getOrderItems(data.items, mappedProducts);
     const subTotal = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const discount = Number(process.env.NEXT_PUBLIC_DISCOUNT) || 0;
+    const discountPercentage = Number(process.env.NEXT_PUBLIC_DISCOUNT) || 0;
+    const total = subTotal * (1 - discountPercentage);
+    const discount = subTotal - total;
 
     const order = await OrderModel.create({
       billingAddress: data.billingAddress,
@@ -44,7 +46,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<APIOrderRes
       orderItems,
       discount,
       subTotal,
-      total: subTotal * (1 - discount),
+      total,
     });
     await db.disconnect();
 

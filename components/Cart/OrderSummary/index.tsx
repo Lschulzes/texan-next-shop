@@ -1,7 +1,16 @@
 import { Divider, Grid, Typography } from '@mui/material';
 import { useCart } from '../../../context';
+type OrderSummaryData = {
+  discount: number;
+  subTotal: number;
+  quantity: number;
+  total: number;
+};
+type OrderSummaryProps = {
+  data?: OrderSummaryData;
+};
 
-const OrderSummary = () => {
+const OrderSummary = ({ data }: OrderSummaryProps) => {
   const { discount, subTotal, quantity, total } = useCart();
 
   return (
@@ -11,7 +20,7 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>{quantity}</Typography>
+        <Typography>{data?.quantity || quantity}</Typography>
       </Grid>
 
       <Grid item xs={6}>
@@ -19,15 +28,15 @@ const OrderSummary = () => {
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>${subTotal}</Typography>
+        <Typography>${data?.subTotal || subTotal}</Typography>
       </Grid>
 
       <Grid item xs={6}>
-        <Typography>Discounts ({+(process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)</Typography>
+        <Typography>Discounts ({+(data?.discount || process.env.NEXT_PUBLIC_DISCOUNT || 0) * 100}%)</Typography>
       </Grid>
 
       <Grid item xs={6} display="flex" justifyContent="end">
-        <Typography>${formatToTwoDecimal(discount)}</Typography>
+        <Typography>${formatToTwoDecimal(data?.discount || discount)}</Typography>
       </Grid>
 
       <Divider sx={{ mt: 5 }} />
@@ -38,7 +47,7 @@ const OrderSummary = () => {
 
       <Grid item xs={6} display="flex" justifyContent="end">
         <Typography>
-          <strong>${formatToTwoDecimal(total)}</strong>
+          <strong>${formatToTwoDecimal(data?.total || total)}</strong>
         </Typography>
       </Grid>
     </Grid>

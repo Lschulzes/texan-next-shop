@@ -1,11 +1,34 @@
 import { CreditCardOutlined } from '@mui/icons-material';
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { texanAPI } from '../../api';
 import CartList from '../../components/Cart/CartList';
 import OrderSummary from '../../components/Cart/OrderSummary';
+import FullScreenLoading from '../../components/FullScreenLoading';
 import Layout from '../../components/Layout';
+import { IOrder } from '../../interfaces';
 
 const OrderPage = () => {
+  const [order, setOrder] = useState<IOrder>();
+  const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    texanAPI.get(`/orders/${id}`).then((res) => {
+      if (res.status === 200) {
+        return setOrder(res.data.data);
+      }
+    });
+  }, [id]);
+
+  if (!order) return <FullScreenLoading />;
+
+  const { address, country, lastName, name, phoneNumber } = order.billingAddress;
+  const { discount, total, subTotal } = order;
+  const quantity = order.orderItems.length;
+
   return (
     <Layout title="Summary of the order 16515" description="Summary of the order">
       <Typography variant="h1" component="h1">
@@ -14,13 +37,13 @@ const OrderPage = () => {
 
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} sm={7}>
-          <CartList />
+          <CartList orderItems={order.orderItems} />
         </Grid>
 
         <Grid item xs={12} sm={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Summary (3 products)</Typography>
+              <Typography variant="h2">Summary ({quantity} products)</Typography>
 
               <Divider sx={{ my: 1 }} />
 
@@ -32,13 +55,15 @@ const OrderPage = () => {
                 </NextLink>
               </Box>
 
-              <Typography>Lucas Silva</Typography>
+              <Typography>
+                {name} {lastName}
+              </Typography>
 
-              <Typography>321 Main St., NY</Typography>
+              <Typography>{address}</Typography>
 
-              <Typography>USA</Typography>
+              <Typography>{country}</Typography>
 
-              <Typography>(589) 9855-328</Typography>
+              <Typography>{phoneNumber}</Typography>
 
               <Divider sx={{ my: 1 }} />
 
@@ -48,7 +73,7 @@ const OrderPage = () => {
                 </NextLink>
               </Box>
 
-              <OrderSummary />
+              <OrderSummary data={{ discount, quantity, subTotal, total }} />
 
               <Box mt={3}>
                 <h1>Pay</h1>
