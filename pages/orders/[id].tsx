@@ -30,9 +30,9 @@ const OrderPage = () => {
   const quantity = order.orderItems.length;
 
   return (
-    <Layout title="Summary of the order 16515" description="Summary of the order">
+    <Layout title={`Summary of the order ${id}`} description="Summary of the order">
       <Typography variant="h1" component="h1">
-        Order #16515
+        Order #{id?.slice(0, 6)}
       </Typography>
 
       <Grid container spacing={2} mt={2}>

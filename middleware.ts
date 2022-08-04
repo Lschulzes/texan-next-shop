@@ -5,7 +5,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET || '' });
 
-  if (pathname.startsWith('/checkout')) {
+  if (pathname.startsWith('/checkout') || pathname.startsWith('/orders')) {
     if (token) return NextResponse.next();
 
     const { protocol, host, pathname } = req.nextUrl;
@@ -25,5 +25,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/checkout/:path*', '/auth/:path*'],
+  matcher: ['/checkout/:path*', '/auth/:path*', '/orders/:path*'],
 };
