@@ -21,6 +21,15 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(`${protocol}//${host}/`);
   }
 
+  if (pathname.startsWith('/api/admin/:path*')) {
+    const role = (token as { user?: { role: string } })?.user?.role;
+    if (role === 'admin' || role === 'superuser') return NextResponse.next();
+
+    const { protocol, host } = req.nextUrl;
+
+    return NextResponse.redirect(`${protocol}//${host}/`);
+  }
+
   if (pathname.startsWith('/auth')) {
     if (token) {
       const { protocol, host, search } = req.nextUrl;
@@ -33,5 +42,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/checkout/:path*', '/auth/:path*', '/orders/:path*', '/admin/:path*'],
+  matcher: ['/checkout/:path*', '/auth/:path*', '/orders/:path*', '/admin/:path*', '/api/admin/:path*'],
 };
