@@ -4,6 +4,9 @@ import Stripe from 'stripe';
 import { db } from '../../database';
 import { OrderModel } from './../../models/OrderModel';
 
+const webhookSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET || false;
+const stripeSecret = process.env.STRIPE_SECRET_KEY || false;
+
 export default async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'POST':
@@ -16,10 +19,11 @@ export default async function webhookHandler(req: NextApiRequest, res: NextApiRe
 const validateStripe = async (req: NextApiRequest, res: NextApiResponse) => {
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET || false;
-  const stripeSecret = process.env.STRIPE_SECRET_KEY || false;
+
   if (!sig || !webhookSecret || !stripeSecret) return;
+
   const stripe = new Stripe(stripeSecret, { typescript: true, apiVersion: '2022-08-01' });
+
   try {
     const event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
     await handleEvent(event as unknown as StripeEvent);
