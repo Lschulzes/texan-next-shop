@@ -13,5 +13,5 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
 const returnStats = async (req: NextApiRequest, res: NextApiResponse) => {
   const stats = await getStats(req);
 
-  return res.status(200).json({ stats });
+  return res.status(200).send(stats);
 };

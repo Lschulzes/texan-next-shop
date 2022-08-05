@@ -14,7 +14,6 @@ import { GetServerSideProps } from 'next';
 import { useEffect, useState } from 'react';
 import { texanAPI } from '../../api';
 import AdminLayout from '../../components/AdminLayout';
-import useUser from '../../context/Auth/useUser';
 import { getStats } from '../../database/db';
 
 export type Stats = {
@@ -33,21 +32,19 @@ const DashboardPage = ({ stats }: DashboardProps) => {
   const [currentStats, setCurrentStats] = useState<Stats>();
   const [refreshIn, setRefreshIn] = useState<number>(15);
 
-  const { user } = useUser();
-
   const { clients, lowInStock, nonExistant, paid, pendent, products, quantityOfOrders } = currentStats || stats;
 
   useEffect(() => {
     if (refreshIn < 1) {
       setRefreshIn(60);
-      texanAPI.get('/stats').then(({ data }) => setCurrentStats(data.stats));
+      texanAPI.get<Stats>('/stats').then(({ data }) => setCurrentStats(data));
       return;
     }
 
     const timer = setInterval(() => setRefreshIn((cur) => --cur), 1000);
 
     return () => clearInterval(timer);
-  }, [refreshIn, user?._id]);
+  }, [refreshIn]);
 
   return (
     <AdminLayout title="Dashboard" subTitle="General Stats" icon={<DashboardOutlined />}>
@@ -74,7 +71,7 @@ const DashboardPage = ({ stats }: DashboardProps) => {
           icon={<CategoryOutlined color="warning" sx={{ fontSize: 40 }} />}
         />
         <SummaryTile
-          title="Not existant"
+          title="No inventory"
           amount={nonExistant}
           icon={<CancelPresentationOutlined color="error" sx={{ fontSize: 40 }} />}
         />

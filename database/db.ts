@@ -41,7 +41,8 @@ export const getStats = async (
 
   await connect();
   const clients = await UserModel.count({ role: 'client' });
-  const lowInStock = await ProductModel.count({ inStock: { $lte: 3 } });
+  const lowInStock = await ProductModel.count({ inStock: { $lte: 5 } });
+  const nonExistant = await ProductModel.count({ inStock: 0 });
   const amountOfProducts = await ProductModel.count();
   const quantityOfOrders = await OrderModel.count();
   const paid = await OrderModel.count({ isPaid: true });
@@ -50,7 +51,7 @@ export const getStats = async (
   return {
     clients,
     lowInStock,
-    nonExistant: 0,
+    nonExistant,
     paid,
     pendent: quantityOfOrders - paid,
     products: amountOfProducts,
