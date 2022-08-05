@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname.startsWith('/admin')) {
-    if ((token as { user: { role: string } }).user.role === 'admin') return NextResponse.next();
+    if ((token as { user?: { role: string } })?.user?.role === 'admin') return NextResponse.next();
 
     const { protocol, host } = req.nextUrl;
 
