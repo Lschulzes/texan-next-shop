@@ -1,4 +1,5 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
@@ -9,9 +10,9 @@ import { CartProvider } from '../context/Cart';
 import '../styles/globals.css';
 import { lightTheme } from '../themes';
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY || '');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY || '');
 
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SWRConfig
       value={{
@@ -22,11 +23,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <CartProvider>
           <UserProvider>
             <UIProvider>
-              <ThemeProvider theme={lightTheme}>
-                <CssBaseline />
+              <Elements stripe={stripePromise}>
+                <ThemeProvider theme={lightTheme}>
+                  <CssBaseline />
 
-                <Component {...pageProps} />
-              </ThemeProvider>
+                  <Component {...pageProps} />
+                </ThemeProvider>
+              </Elements>
             </UIProvider>
           </UserProvider>
         </CartProvider>
