@@ -24,21 +24,24 @@ const uploadImageToS3 = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const saveFile = async (basePath: string, file: File) => {
-  const blob = fs.readFileSync(file.filepath);
-  const uploadedImage = await uploadImage(`${basePath}${file.originalFilename}`, blob);
-  return uploadedImage.Location;
+  try {
+    const blob = fs.readFileSync(file.filepath);
+    const uploadedImage = await uploadImage(`${basePath}${file.originalFilename}`, blob);
+    return uploadedImage.Location;
+  } catch (error) {
+    throw new AppError('Image upload failed', 500);
+  }
 };
 
-const parseFiles = (req: NextApiRequest): Promise<string> => {
-  const { basePath = '' } = req.body;
-
+const parseFiles = async (req: NextApiRequest): Promise<string> => {
+  const { path = '' } = req.query;
   return new Promise((res, rej) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
       if (err) return rej(err);
 
-      const path = await saveFile(basePath, files.file as File);
-      res(path);
+      const href = await saveFile(`${path}`, files.file as File);
+      res(href);
     });
   });
 };

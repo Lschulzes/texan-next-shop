@@ -60,8 +60,7 @@ const Slug: FC<PageProps> = ({ product }) => {
       for (const file of target.files) {
         const formData = new FormData();
         formData.append('file', file);
-        const { data } = await texanAPI.post('/admin/upload', formData);
-        console.log(data.message);
+        await texanAPI.post(`/admin/upload?path=products/${product.slug}/`, formData);
       }
     } catch (error) {}
   };
