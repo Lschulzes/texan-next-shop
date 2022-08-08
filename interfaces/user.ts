@@ -10,8 +10,9 @@ export interface IUser {
 }
 
 export enum UserRoles {
-  ADMIN = "admin",
-  CLIENT = "client",
+  ADMIN = 'admin',
+  CLIENT = 'client',
+  SUPERUSER = 'superuser',
 }
 
 export type UserRolestype = `${UserRoles}`;

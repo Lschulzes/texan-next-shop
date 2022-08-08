@@ -1,6 +1,6 @@
 export const handleMultipleMongooseErrors = (err: any): AppError => {
   if (err?.errors?.email) {
-    const { message = "" } = err.errors.email?.properties;
+    const { message = '' } = err.errors.email?.properties;
 
     return new AppError(message, 400);
   }
@@ -13,24 +13,22 @@ export const handleMultipleMongooseErrors = (err: any): AppError => {
 
   const allErrors = Object.values(err.errors);
 
-  const startingMessage = `${
-    allErrors.length > 1 ? "Multiple" : "A"
-  } Validation Error${allErrors.length > 1 ? "s" : ""} Found:`;
+  const startingMessage = `${allErrors.length > 1 ? 'Multiple' : 'A'} Validation Error${
+    allErrors.length > 1 ? 's' : ''
+  } Found:`;
 
   const message = allErrors.reduce(
-    (prev: string, el: any, index: number) =>
-      `${prev} ${index > 0 && "|"} ${el.path}: ${el.message}`,
-    startingMessage
+    (prev: string, el: any, index: number) => `${prev} ${index > 0 && '|'} ${el.path}: ${el.message}`,
+    startingMessage,
   );
-
-  return new AppError(message, err.statusCode);
+  return new AppError(message, err.statusCode || 421);
 };
 
 export class AppError extends Error {
   public status: string;
   constructor(message: string, public statusCode: number) {
     super(message);
-    this.status = `${statusCode}`.charAt(0) === "4" ? "fail" : "error";
+    this.status = `${statusCode}`.charAt(0) === '4' ? 'fail' : 'error';
 
     Error.captureStackTrace(this, this.constructor);
   }
