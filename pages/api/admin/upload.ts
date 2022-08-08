@@ -31,9 +31,9 @@ const getS3Imagery = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const uploadImageToS3 = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    await parseFiles(req);
+    const path = await parseFiles(req);
 
-    return res.status(200).json({ message: 'Image uploaded' });
+    return res.status(200).json({ path });
   } catch (error) {
     res.status((error as AppError).statusCode).send((error as AppError).message);
   }

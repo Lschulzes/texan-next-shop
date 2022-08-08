@@ -42,7 +42,6 @@ const Slug: FC<PageProps> = ({ product }) => {
   const [toastMessage, setToastMessage] = useState('');
   const [currentTag, setCurrentTag] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [S3Images, setS3Images] = useState<Array<string>>([]);
 
   const router = useRouter();
   const {
@@ -58,13 +57,25 @@ const Slug: FC<PageProps> = ({ product }) => {
     if (!target.files || !target.files.length) return;
 
     try {
+      const paths: Array<string> = [];
       for (const file of target.files) {
         const formData = new FormData();
         formData.append('file', file);
-        await texanAPI.post(`/admin/upload?path=products/${product.slug}/`, formData);
+        const { data } = await texanAPI.post(`/admin/upload?path=products/${product.slug}/`, formData);
+        paths.push(data.path);
       }
+
+      const images = getValues('images').concat(paths);
+      setValue('images', images);
     } catch (error) {}
   };
+
+  const onDeleteImage = (img: string) =>
+    setValue(
+      'images',
+      getValues('images').filter((image) => image !== img),
+      { shouldValidate: true },
+    );
 
   const onChangeSize = (size: ISize) => {
     const currentSizes = getValues('sizes') || [];
@@ -77,12 +88,6 @@ const Slug: FC<PageProps> = ({ product }) => {
 
     setValue('sizes', currentSizes.concat(size), { shouldValidate: true });
   };
-
-  useEffect(() => {
-    texanAPI.get(`/admin/upload?path=products/${product.slug}/`).then(({ data }) => {
-      setS3Images(data);
-    });
-  }, [product.slug]);
 
   const onSubmit = async (formData: IProduct) => {
     setIsSaving(true);
@@ -318,27 +323,20 @@ const Slug: FC<PageProps> = ({ product }) => {
                 Load Image
               </Button>
 
-              <Chip label="At least 2 images are required" color="error" variant="outlined" />
+              <Chip sx={{ mb: 2 }} label="At least 2 images are required" color="error" variant="outlined" />
 
               <Grid container spacing={2}>
-                {product.images.map((img) => (
+                {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
-                      <CardMedia component="img" className="fadeIn" image={`/products/${img}`} alt={img} />
+                      <CardMedia
+                        component="img"
+                        className="fadeIn"
+                        image={img.includes('http') ? img : `/products/${img}`}
+                        alt={img}
+                      />
                       <CardActions>
-                        <Button fullWidth color="error">
-                          Remove
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-                {S3Images.map((img) => (
-                  <Grid item xs={4} sm={3} key={img}>
-                    <Card>
-                      <CardMedia component="img" className="fadeIn" image={img} alt={img} />
-                      <CardActions>
-                        <Button fullWidth color="error">
+                        <Button fullWidth color="error" onClick={() => onDeleteImage(img)}>
                           Remove
                         </Button>
                       </CardActions>
@@ -384,20 +382,3 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default Slug;
-
-/************************ */
-const mapProductToCartProduct = (product: IProduct) => {
-  if (!product) return null;
-
-  return {
-    _id: product._id,
-    gender: product.gender,
-    image: product.images[0],
-    price: product.price,
-    slug: product.slug,
-    title: product.title,
-    inStock: product.inStock,
-    quantity: 1,
-    size: undefined,
-  };
-};
