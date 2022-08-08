@@ -24,6 +24,8 @@ const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
     if (images.length < 2) throw new AppError('A product needs to have at least 2 images', 400);
 
     await db.connect();
+    const productWithSlug = await ProductModel.findOne({ slug: req.body.slug });
+    if (productWithSlug) throw new AppError('Slug already exists', 401);
     const product = await ProductModel.create(req.body);
     await db.disconnect();
 

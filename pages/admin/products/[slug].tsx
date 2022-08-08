@@ -327,13 +327,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   if (!slugs) return { paths: [], fallback: true };
 
-  const paths = slugs.map(({ slug }) => ({ params: { slug } }));
+  const paths = slugs.map(({ slug }) => ({ params: { slug } })).concat({ params: { slug: 'new' } });
 
   return { paths, fallback: true };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug = '' } = params as { slug: string };
+
+  if (slug === 'new')
+    return { props: { product: { slug: 'new', images: [], sizes: [], tags: [], inStock: 0, price: 0 } } };
+
   const product = await getProductBySlug(slug);
 
   if (!product)
