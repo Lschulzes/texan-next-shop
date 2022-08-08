@@ -43,11 +43,11 @@ const Slug: FC<PageProps> = ({ product }) => {
   if (!product) return <div>No product found</div>;
 
   return (
-    <AdminLayout title={'Producto'} subTitle={`Editando: ${product.title}`} icon={<DriveFileRenameOutline />}>
+    <AdminLayout title={'Product'} subTitle={`Editing: ${product.title}`} icon={<DriveFileRenameOutline />}>
       <form>
         <Box display="flex" justifyContent="end" sx={{ mb: 1 }}>
           <Button color="secondary" startIcon={<SaveOutlined />} sx={{ width: '150px' }} type="submit">
-            Guardar
+            Save
           </Button>
         </Box>
 
@@ -55,28 +55,28 @@ const Slug: FC<PageProps> = ({ product }) => {
           {/* Data */}
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Título"
+              label="Title"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              // { ...register('name', {
-              //     required: 'Este campo es requerido',
-              //     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
+              // { ...register('title', {
+              //     required: 'Required field',
+              //     minLength: { value: 2, message: 'At least 2 characters' }
               // })}
               // error={ !!errors.name }
               // helperText={ errors.name?.message }
             />
 
-            <TextField label="Descripción" variant="filled" fullWidth multiline sx={{ mb: 1 }} />
+            <TextField label="Description" variant="filled" fullWidth multiline sx={{ mb: 1 }} />
 
-            <TextField label="Inventario" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
+            <TextField label="Inventory" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
 
-            <TextField label="Precio" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
+            <TextField label="Price" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
 
             <Divider sx={{ my: 1 }} />
 
             <FormControl sx={{ mb: 1 }}>
-              <FormLabel>Tipo</FormLabel>
+              <FormLabel>Type</FormLabel>
               <RadioGroup
                 row
                 // value={ status }
@@ -94,7 +94,7 @@ const Slug: FC<PageProps> = ({ product }) => {
             </FormControl>
 
             <FormControl sx={{ mb: 1 }}>
-              <FormLabel>Género</FormLabel>
+              <FormLabel>Gender</FormLabel>
               <RadioGroup
                 row
                 // value={ status }
@@ -112,24 +112,17 @@ const Slug: FC<PageProps> = ({ product }) => {
             </FormControl>
 
             <FormGroup>
-              <FormLabel>Tallas</FormLabel>
+              <FormLabel>Sizes</FormLabel>
               {validSizes.map((size) => (
                 <FormControlLabel key={size} control={<Checkbox />} label={size} />
               ))}
             </FormGroup>
           </Grid>
 
-          {/* Tags e imagenes */}
           <Grid item xs={12} sm={6}>
             <TextField label="Slug - URL" variant="filled" fullWidth sx={{ mb: 1 }} />
 
-            <TextField
-              label="Etiquetas"
-              variant="filled"
-              fullWidth
-              sx={{ mb: 1 }}
-              helperText="Presiona [spacebar] para agregar"
-            />
+            <TextField label="Tags" variant="filled" fullWidth sx={{ mb: 1 }} helperText="Press [spacebar] to add" />
 
             <Box
               sx={{
@@ -158,12 +151,12 @@ const Slug: FC<PageProps> = ({ product }) => {
             <Divider sx={{ my: 2 }} />
 
             <Box display="flex" flexDirection="column">
-              <FormLabel sx={{ mb: 1 }}>Imágenes</FormLabel>
+              <FormLabel sx={{ mb: 1 }}>Images</FormLabel>
               <Button color="secondary" fullWidth startIcon={<UploadOutlined />} sx={{ mb: 3 }}>
-                Cargar imagen
+                Load Image
               </Button>
 
-              <Chip label="Es necesario al 2 imagenes" color="error" variant="outlined" />
+              <Chip label="At least 2 images are required" color="error" variant="outlined" />
 
               <Grid container spacing={2}>
                 {product.images.map((img) => (
@@ -172,7 +165,7 @@ const Slug: FC<PageProps> = ({ product }) => {
                       <CardMedia component="img" className="fadeIn" image={`/products/${img}`} alt={img} />
                       <CardActions>
                         <Button fullWidth color="error">
-                          Borrar
+                          Remove
                         </Button>
                       </CardActions>
                     </Card>
