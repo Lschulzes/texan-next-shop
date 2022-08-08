@@ -20,7 +20,7 @@ import {
 import { Box } from '@mui/system';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import AdminLayout from '../../../components/AdminLayout';
@@ -36,6 +36,8 @@ const validGender: Array<ProductGender> = ['men', 'women', 'kid', 'unisex'];
 const validSizes: Array<ISize> = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 const Slug: FC<PageProps> = ({ product }) => {
+  const [currentTag, setCurrentTag] = useState('');
+
   const router = useRouter();
   const {
     register,
@@ -53,10 +55,6 @@ const Slug: FC<PageProps> = ({ product }) => {
     setValue('slug', newSlug);
   }, [title, setValue]);
 
-  const onDeleteTag = (tag: string) => {
-    //
-  };
-
   const onChangeSize = (size: ISize) => {
     const currentSizes = getValues('sizes') || [];
     if (currentSizes.includes(size))
@@ -68,6 +66,25 @@ const Slug: FC<PageProps> = ({ product }) => {
 
     setValue('sizes', currentSizes.concat(size), { shouldValidate: true });
   };
+
+  const onDeleteTag = (tag: string) => {
+    const currentTags = getValues('tags') || [];
+    setValue(
+      'tags',
+      currentTags.filter((t) => t !== tag),
+    );
+  };
+
+  useEffect(() => {
+    if (!currentTag.includes(' ')) return;
+
+    const currentTags = getValues('tags') || [];
+    if (currentTags.includes(currentTag)) return setCurrentTag('');
+
+    setValue('tags', currentTags.concat(currentTag));
+
+    return setCurrentTag('');
+  }, [currentTag, setValue, getValues]);
 
   const onSubmit = (formData: IProduct) => {
     console.log(formData);
@@ -210,7 +227,15 @@ const Slug: FC<PageProps> = ({ product }) => {
               sx={{ mb: 1 }}
             />
 
-            <TextField label="Tags" variant="filled" fullWidth sx={{ mb: 1 }} helperText="Press [spacebar] to add" />
+            <TextField
+              value={currentTag}
+              onChange={({ target }) => setCurrentTag(target.value)}
+              label="Tags"
+              variant="filled"
+              fullWidth
+              sx={{ mb: 1 }}
+              helperText="Press [spacebar] to add"
+            />
 
             <Box
               sx={{
@@ -222,7 +247,7 @@ const Slug: FC<PageProps> = ({ product }) => {
               }}
               component="ul"
             >
-              {product.tags.map((tag) => {
+              {getValues('tags')?.map((tag) => {
                 return (
                   <Chip
                     key={tag}
