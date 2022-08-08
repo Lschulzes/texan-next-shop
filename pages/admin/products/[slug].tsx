@@ -15,14 +15,17 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Snackbar,
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
+import { texanAPI } from '../../../api';
 import AdminLayout from '../../../components/AdminLayout';
 import { getAllProductsSlugs, getProductBySlug } from '../../../database/dbProducts';
 import { IProduct, ISize, IType, ProductGender } from '../../../interfaces';
@@ -36,7 +39,9 @@ const validGender: Array<ProductGender> = ['men', 'women', 'kid', 'unisex'];
 const validSizes: Array<ISize> = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 const Slug: FC<PageProps> = ({ product }) => {
+  const [toastMessage, setToastMessage] = useState('');
   const [currentTag, setCurrentTag] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const router = useRouter();
   const {
@@ -46,7 +51,7 @@ const Slug: FC<PageProps> = ({ product }) => {
     getValues,
     setValue,
     watch,
-  } = useForm<IProduct>();
+  } = useForm<IProduct>({ defaultValues: { ...product } });
 
   const { title } = watch();
 
@@ -86,18 +91,42 @@ const Slug: FC<PageProps> = ({ product }) => {
     return setCurrentTag('');
   }, [currentTag, setValue, getValues]);
 
-  const onSubmit = (formData: IProduct) => {
-    console.log(formData);
-    //
+  const onSubmit = async (formData: IProduct) => {
+    setIsSaving(true);
+    try {
+      await texanAPI({
+        url: '/admin/products',
+        method: formData._id ? 'PATCH' : 'POST',
+        data: formData,
+      });
+      if (!formData._id) router.reload();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setToastMessage(String(error.response?.data as string));
+      }
+    }
+    setIsSaving(false);
   };
 
   if (!product) return <div>No product found</div>;
 
   return (
     <AdminLayout title={'Product'} subTitle={`Editing: ${product.title}`} icon={<DriveFileRenameOutline />}>
+      <Snackbar
+        open={!!toastMessage.length}
+        autoHideDuration={6000}
+        onClose={() => setToastMessage('')}
+        message={toastMessage}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" justifyContent="end" sx={{ mb: 1 }}>
-          <Button color="secondary" startIcon={<SaveOutlined />} sx={{ width: '150px' }} type="submit">
+          <Button
+            disabled={isSaving}
+            color="secondary"
+            startIcon={<SaveOutlined />}
+            sx={{ width: '150px' }}
+            type="submit"
+          >
             Save
           </Button>
         </Box>
