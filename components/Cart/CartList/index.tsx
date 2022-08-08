@@ -2,6 +2,7 @@ import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '
 import NextLink from 'next/link';
 import { useCart } from '../../../context';
 import { ICartProduct, IOrderItem } from '../../../interfaces';
+import { getImageUrl } from '../../../pages/admin/products/[slug]';
 import ItemCounter from '../../ItemCounter';
 
 type CartListProps = {
@@ -31,7 +32,7 @@ const CartList = ({ editable = false, orderItems }: CartListProps) => {
               <NextLink href={`/product/${slug}`}>
                 <Link>
                   <CardActionArea>
-                    <CardMedia image={`/products/${image}`} sx={{ borderRadius: '5px' }} component="img" />
+                    <CardMedia image={getImageUrl(image)} sx={{ borderRadius: '5px' }} component="img" />
                   </CardActionArea>
                 </Link>
               </NextLink>

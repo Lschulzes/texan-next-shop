@@ -2,6 +2,7 @@ import { Box, Card, CardActionArea, CardMedia, Chip, Grid, Link, Typography } fr
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { IProduct } from '../../../interfaces';
+import { getImageUrl } from '../../../pages/admin/products/[slug]';
 
 type Props = {
   product: IProduct;
@@ -38,7 +39,7 @@ const ProductCard = ({ product }: Props) => {
 
               <CardMedia
                 component="img"
-                image={`/products/${productImage}`}
+                image={getImageUrl(productImage)}
                 alt={description}
                 className="fadeIn"
                 onLoad={() => setIsImageLoaded(true)}

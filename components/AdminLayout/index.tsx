@@ -31,7 +31,9 @@ const AdminLayout = ({ subTitle, title, icon, children }: Props) => {
               {title}
             </>
           </Typography>
-          <Typography variant="h2">{subTitle}</Typography>
+          <Typography variant="h2" sx={{ pb: 2 }}>
+            {subTitle}
+          </Typography>
         </Box>
         <Box className="fadeIn">{children}</Box>
       </main>
