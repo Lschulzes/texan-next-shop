@@ -21,22 +21,47 @@ import { Box } from '@mui/system';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
+import { useForm } from 'react-hook-form';
 import AdminLayout from '../../../components/AdminLayout';
 import { getAllProductsSlugs, getProductBySlug } from '../../../database/dbProducts';
-import { IProduct } from '../../../interfaces';
+import { IProduct, ISize, IType, ProductGender } from '../../../interfaces';
 
 type PageProps = {
   product: IProduct;
 };
 
-const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
-const validGender = ['men', 'women', 'kid', 'unisex'];
-const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+const validTypes: Array<IType> = ['shirts', 'pants', 'hoodies', 'hats'];
+const validGender: Array<ProductGender> = ['men', 'women', 'kid', 'unisex'];
+const validSizes: Array<ISize> = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 const Slug: FC<PageProps> = ({ product }) => {
   const router = useRouter();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    getValues,
+    setValue,
+  } = useForm<IProduct>();
 
   const onDeleteTag = (tag: string) => {
+    //
+  };
+
+  const onChangeSize = (size: ISize) => {
+    const currentSizes = getValues('sizes') || [];
+    if (currentSizes.includes(size))
+      return setValue(
+        'sizes',
+        currentSizes.filter((s) => s !== size),
+        { shouldValidate: true },
+      );
+
+    setValue('sizes', currentSizes.concat(size), { shouldValidate: true });
+  };
+
+  const onSubmit = (formData: IProduct) => {
+    console.log(formData);
     //
   };
 
@@ -44,7 +69,7 @@ const Slug: FC<PageProps> = ({ product }) => {
 
   return (
     <AdminLayout title={'Product'} subTitle={`Editing: ${product.title}`} icon={<DriveFileRenameOutline />}>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" justifyContent="end" sx={{ mb: 1 }}>
           <Button color="secondary" startIcon={<SaveOutlined />} sx={{ width: '150px' }} type="submit">
             Save
@@ -59,19 +84,55 @@ const Slug: FC<PageProps> = ({ product }) => {
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              // { ...register('title', {
-              //     required: 'Required field',
-              //     minLength: { value: 2, message: 'At least 2 characters' }
-              // })}
-              // error={ !!errors.name }
-              // helperText={ errors.name?.message }
+              {...register('title', {
+                required: 'Required field',
+                minLength: { value: 2, message: 'At least 2 characters' },
+              })}
+              error={!!errors.title}
+              helperText={errors.title?.message}
             />
 
-            <TextField label="Description" variant="filled" fullWidth multiline sx={{ mb: 1 }} />
+            <TextField
+              {...register('description', {
+                required: 'Required field',
+                minLength: { value: 50, message: 'At least 50 characters' },
+              })}
+              error={!!errors.description}
+              helperText={errors.description?.message}
+              label="Description"
+              variant="filled"
+              fullWidth
+              multiline
+              sx={{ mb: 1 }}
+            />
 
-            <TextField label="Inventory" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
+            <TextField
+              {...register('inStock', {
+                required: 'Required field',
+                min: { value: 0, message: 'At least 0 products in stock' },
+              })}
+              error={!!errors.inStock}
+              helperText={errors.inStock?.message}
+              label="Inventory"
+              type="number"
+              variant="filled"
+              fullWidth
+              sx={{ mb: 1 }}
+            />
 
-            <TextField label="Price" type="number" variant="filled" fullWidth sx={{ mb: 1 }} />
+            <TextField
+              {...register('price', {
+                required: 'Required field',
+                min: { value: 0, message: 'At least $0' },
+              })}
+              error={!!errors.price}
+              helperText={errors.price?.message}
+              label="Price"
+              type="number"
+              variant="filled"
+              fullWidth
+              sx={{ mb: 1 }}
+            />
 
             <Divider sx={{ my: 1 }} />
 
@@ -79,8 +140,8 @@ const Slug: FC<PageProps> = ({ product }) => {
               <FormLabel>Type</FormLabel>
               <RadioGroup
                 row
-                // value={ status }
-                // onChange={ onStatusChanged }
+                value={getValues('type')}
+                onChange={({ target }) => setValue('type', target.value as IType, { shouldValidate: true })}
               >
                 {validTypes.map((option) => (
                   <FormControlLabel
@@ -97,8 +158,8 @@ const Slug: FC<PageProps> = ({ product }) => {
               <FormLabel>Gender</FormLabel>
               <RadioGroup
                 row
-                // value={ status }
-                // onChange={ onStatusChanged }
+                value={getValues('gender')}
+                onChange={({ target }) => setValue('gender', target.value as ProductGender, { shouldValidate: true })}
               >
                 {validGender.map((option) => (
                   <FormControlLabel
@@ -114,13 +175,30 @@ const Slug: FC<PageProps> = ({ product }) => {
             <FormGroup>
               <FormLabel>Sizes</FormLabel>
               {validSizes.map((size) => (
-                <FormControlLabel key={size} control={<Checkbox />} label={size} />
+                <FormControlLabel
+                  key={size}
+                  control={<Checkbox checked={getValues('sizes')?.includes(size)} />}
+                  label={size}
+                  onChange={() => onChangeSize(size)}
+                />
               ))}
             </FormGroup>
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField label="Slug - URL" variant="filled" fullWidth sx={{ mb: 1 }} />
+            <TextField
+              {...register('slug', {
+                required: 'Required field',
+                min: { value: 0, message: 'At least 0 products in stock' },
+                validate: (value: string) => !value.trim().includes(' ') || 'No spaces are allowed',
+              })}
+              error={!!errors.slug}
+              helperText={errors.slug?.message}
+              label="Slug - URL"
+              variant="filled"
+              fullWidth
+              sx={{ mb: 1 }}
+            />
 
             <TextField label="Tags" variant="filled" fullWidth sx={{ mb: 1 }} helperText="Press [spacebar] to add" />
 
