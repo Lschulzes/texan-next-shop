@@ -329,12 +329,7 @@ const Slug: FC<PageProps> = ({ product }) => {
                 {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
-                      <CardMedia
-                        component="img"
-                        className="fadeIn"
-                        image={img.includes('http') ? img : `/products/${img}`}
-                        alt={img}
-                      />
+                      <CardMedia component="img" className="fadeIn" image={getImageUrl(img)} alt={img} />
                       <CardActions>
                         <Button fullWidth color="error" onClick={() => onDeleteImage(img)}>
                           Remove
@@ -382,3 +377,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default Slug;
+
+export function getImageUrl(img: string) {
+  return img.includes('http') ? img : `/products/${img}`;
+}

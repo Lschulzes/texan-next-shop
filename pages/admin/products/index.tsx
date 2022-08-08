@@ -6,6 +6,7 @@ import NextLink from 'next/link';
 import useSWR from 'swr';
 import AdminLayout from '../../../components/AdminLayout';
 import { IProduct } from '../../../interfaces';
+import { getImageUrl } from './[slug]';
 
 const columns: Array<GridColDef> = [
   {
@@ -14,7 +15,7 @@ const columns: Array<GridColDef> = [
     width: 120,
     renderCell: ({ row }: GridValueGetterParams) => (
       <a href={`/product/${row.slug}`} target="_blank" rel="noreferrer">
-        <CardMedia sx={{ cursor: 'pointer' }} component="img" className="fadeIn" image={`/products/${row.image}`} />
+        <CardMedia sx={{ cursor: 'pointer' }} component="img" image={getImageUrl(row.image)} />
       </a>
     ),
   },
