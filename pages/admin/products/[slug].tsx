@@ -20,8 +20,9 @@ import {
 import { Box } from '@mui/system';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import slugify from 'slugify';
 import AdminLayout from '../../../components/AdminLayout';
 import { getAllProductsSlugs, getProductBySlug } from '../../../database/dbProducts';
 import { IProduct, ISize, IType, ProductGender } from '../../../interfaces';
@@ -42,7 +43,15 @@ const Slug: FC<PageProps> = ({ product }) => {
     handleSubmit,
     getValues,
     setValue,
+    watch,
   } = useForm<IProduct>();
+
+  const { title } = watch();
+
+  useEffect(() => {
+    const newSlug = slugify(title, '_');
+    setValue('slug', newSlug);
+  }, [title, setValue]);
 
   const onDeleteTag = (tag: string) => {
     //
