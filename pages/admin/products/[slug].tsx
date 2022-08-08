@@ -22,7 +22,7 @@ import { Box } from '@mui/system';
 import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import { texanAPI } from '../../../api';
@@ -53,12 +53,18 @@ const Slug: FC<PageProps> = ({ product }) => {
     watch,
   } = useForm<IProduct>({ defaultValues: { ...product } });
 
-  const { title } = watch();
+  const onFilesSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!target.files || !target.files.length) return;
 
-  useEffect(() => {
-    const newSlug = slugify(title || '', '_').toLowerCase();
-    setValue('slug', newSlug);
-  }, [title, setValue]);
+    try {
+      for (const file of target.files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await texanAPI.post('/admin/upload', formData);
+        console.log(data.message);
+      }
+    } catch (error) {}
+  };
 
   const onChangeSize = (size: ISize) => {
     const currentSizes = getValues('sizes') || [];
@@ -70,6 +76,23 @@ const Slug: FC<PageProps> = ({ product }) => {
       );
 
     setValue('sizes', currentSizes.concat(size), { shouldValidate: true });
+  };
+
+  const onSubmit = async (formData: IProduct) => {
+    setIsSaving(true);
+    try {
+      await texanAPI({
+        url: '/admin/products',
+        method: formData._id ? 'PATCH' : 'POST',
+        data: formData,
+      });
+      if (!formData._id) router.reload();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setToastMessage(String(error.response?.data as string));
+      }
+    }
+    setIsSaving(false);
   };
 
   const onDeleteTag = (tag: string) => {
@@ -91,22 +114,12 @@ const Slug: FC<PageProps> = ({ product }) => {
     return setCurrentTag('');
   }, [currentTag, setValue, getValues]);
 
-  const onSubmit = async (formData: IProduct) => {
-    setIsSaving(true);
-    try {
-      await texanAPI({
-        url: '/admin/products',
-        method: formData._id ? 'PATCH' : 'POST',
-        data: formData,
-      });
-      if (!formData._id) router.reload();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setToastMessage(String(error.response?.data as string));
-      }
-    }
-    setIsSaving(false);
-  };
+  const { title } = watch();
+
+  useEffect(() => {
+    const newSlug = slugify(title || '', '_').toLowerCase();
+    setValue('slug', newSlug);
+  }, [title, setValue]);
 
   if (!product) return <div>No product found</div>;
 
@@ -294,7 +307,8 @@ const Slug: FC<PageProps> = ({ product }) => {
 
             <Box display="flex" flexDirection="column">
               <FormLabel sx={{ mb: 1 }}>Images</FormLabel>
-              <Button color="secondary" fullWidth startIcon={<UploadOutlined />} sx={{ mb: 3 }}>
+              <Button color="secondary" component="label" fullWidth startIcon={<UploadOutlined />} sx={{ mb: 3 }}>
+                <input onChange={onFilesSelected} hidden accept="image/png image/jpeg image/gif" multiple type="file" />
                 Load Image
               </Button>
 
