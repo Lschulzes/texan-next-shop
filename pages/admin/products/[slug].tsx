@@ -49,7 +49,7 @@ const Slug: FC<PageProps> = ({ product }) => {
   const { title } = watch();
 
   useEffect(() => {
-    const newSlug = slugify(title, '_');
+    const newSlug = slugify(title || '', '_').toLowerCase();
     setValue('slug', newSlug);
   }, [title, setValue]);
 
@@ -206,6 +206,7 @@ const Slug: FC<PageProps> = ({ product }) => {
               label="Slug - URL"
               variant="filled"
               fullWidth
+              focused={!!getValues('slug')?.length}
               sx={{ mb: 1 }}
             />
 
