@@ -42,6 +42,7 @@ const Slug: FC<PageProps> = ({ product }) => {
   const [toastMessage, setToastMessage] = useState('');
   const [currentTag, setCurrentTag] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [S3Images, setS3Images] = useState<Array<string>>([]);
 
   const router = useRouter();
   const {
@@ -76,6 +77,12 @@ const Slug: FC<PageProps> = ({ product }) => {
 
     setValue('sizes', currentSizes.concat(size), { shouldValidate: true });
   };
+
+  useEffect(() => {
+    texanAPI.get(`/admin/upload?path=products/${product.slug}/`).then(({ data }) => {
+      setS3Images(data);
+    });
+  }, [product.slug]);
 
   const onSubmit = async (formData: IProduct) => {
     setIsSaving(true);
@@ -318,6 +325,18 @@ const Slug: FC<PageProps> = ({ product }) => {
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
                       <CardMedia component="img" className="fadeIn" image={`/products/${img}`} alt={img} />
+                      <CardActions>
+                        <Button fullWidth color="error">
+                          Remove
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
+                {S3Images.map((img) => (
+                  <Grid item xs={4} sm={3} key={img}>
+                    <Card>
+                      <CardMedia component="img" className="fadeIn" image={img} alt={img} />
                       <CardActions>
                         <Button fullWidth color="error">
                           Remove
