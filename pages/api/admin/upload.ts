@@ -1,17 +1,19 @@
 import formidable, { File } from 'formidable';
+import fs from 'fs';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { AppError } from '../../../utils';
+import { uploadImage } from './../../../services/S3';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'POST':
-      return await uploadImage(req, res);
+      return await uploadImageToS3(req, res);
   }
 
   res.status(400).json({ message: 'route not found!' });
 }
 
-const uploadImage = async (req: NextApiRequest, res: NextApiResponse) => {
+const uploadImageToS3 = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await parseFiles(req);
 
@@ -21,19 +23,22 @@ const uploadImage = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const saveFile = async (file: File) => {
-  //
+const saveFile = async (basePath: string, file: File) => {
+  const blob = fs.readFileSync(file.filepath);
+  const uploadedImage = await uploadImage(`${basePath}${file.originalFilename}`, blob);
+  return uploadedImage.Location;
 };
 
-const parseFiles = (req: NextApiRequest) => {
+const parseFiles = (req: NextApiRequest): Promise<string> => {
+  const { basePath = '' } = req.body;
+
   return new Promise((res, rej) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
-      console.log({ err, fields, files });
       if (err) return rej(err);
 
-      await saveFile(files.file as File);
-      res(true);
+      const path = await saveFile(basePath, files.file as File);
+      res(path);
     });
   });
 };
