@@ -8,16 +8,6 @@ import { texanAPI } from '../../api';
 import AdminLayout from '../../components/AdminLayout';
 import { IUser, UserRoles, UserRolestype } from '../../interfaces';
 
-export type Stats = {
-  quantityOfOrders: number;
-  paid: number;
-  pendent: number;
-  nonExistant: number;
-  lowInStock: number;
-  clients: number;
-  products: number;
-};
-
 const UsersPage = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [users, setUsers] = useState<Array<IUser>>();

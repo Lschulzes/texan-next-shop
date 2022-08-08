@@ -25,7 +25,7 @@ const AdminLayout = ({ subTitle, title, icon, children }: Props) => {
         }}
       >
         <Box display="flex" flexDirection="column">
-          <Typography variant="h1" component="h1">
+          <Typography variant="h1" sx={{ pb: 2 }} component="h1" display="flex" gap={2} alignItems="center">
             <>
               {icon}
               {title}
